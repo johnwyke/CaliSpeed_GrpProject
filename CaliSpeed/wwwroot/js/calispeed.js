@@ -1,6 +1,6 @@
-﻿let type = "WebGL"
+﻿let type = "WebGL";
 if (!PIXI.utils.isWebGLSupported()) {
-  type = "canvas"
+  type = "canvas";
 }
 
-PIXI.utils.sayHello(type)
+PIXI.utils.sayHello(type);
