@@ -1,0 +1,15 @@
+﻿@page
+<html>
+<head>
+    <title>SignalR Example</title>
+</head>
+<body>
+    Player Name<input type="text" id="playerName" /><br />
+    <input type="button" id="playButton" value="Play Card" />
+    <ul id="gameUpdatesList"></ul>
+</body>
+</html>
+
+<!--These Script Src tags have to stay at the bottom for SignalR-->
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/example.js"></script>

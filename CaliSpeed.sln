@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaliSpeed", "CaliSpeed\CaliSpeed.csproj", "{8D24F094-9AFE-4EC7-9B90-BEEA0F08D494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaliSpeed", "CaliSpeed\CaliSpeed.csproj", "{8D24F094-9AFE-4EC7-9B90-BEEA0F08D494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaliforniaSpeedLibrary", "CaliforniaSpeedLibrary\CaliforniaSpeedLibrary.csproj", "{4F126BE3-774E-4AEA-8405-0C499EC9249E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaliforniaSpeedLibrary", "CaliforniaSpeedLibrary\CaliforniaSpeedLibrary.csproj", "{4F126BE3-774E-4AEA-8405-0C499EC9249E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaliforniaSpeedUnitTests", "CaliforniaSpeedUnitTests\CaliforniaSpeedUnitTests.csproj", "{6A9B0CBD-675D-411B-B848-BE4265BB12DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaliforniaSpeedUnitTests", "CaliforniaSpeedUnitTests\CaliforniaSpeedUnitTests.csproj", "{6A9B0CBD-675D-411B-B848-BE4265BB12DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

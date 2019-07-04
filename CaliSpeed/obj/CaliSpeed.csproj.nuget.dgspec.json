@@ -1,30 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\chw11\\source\\repos\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj": {}
+    "D:\\Files\\SCHOOL\\19 SU\\CS 3750\\Group Assignment2\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj": {}
   },
   "projects": {
-    "C:\\Users\\chw11\\source\\repos\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj": {
+    "D:\\Files\\SCHOOL\\19 SU\\CS 3750\\Group Assignment2\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\chw11\\source\\repos\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj",
+        "projectUniqueName": "D:\\Files\\SCHOOL\\19 SU\\CS 3750\\Group Assignment2\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj",
         "projectName": "CaliSpeed",
-        "projectPath": "C:\\Users\\chw11\\source\\repos\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj",
-        "packagesPath": "C:\\Users\\chw11\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\chw11\\source\\repos\\CaliSpeed\\CaliSpeed\\obj\\",
+        "projectPath": "D:\\Files\\SCHOOL\\19 SU\\CS 3750\\Group Assignment2\\CaliSpeed\\CaliSpeed\\CaliSpeed.csproj",
+        "packagesPath": "C:\\Users\\Kameron\\.nuget\\packages\\",
+        "outputPath": "D:\\Files\\SCHOOL\\19 SU\\CS 3750\\Group Assignment2\\CaliSpeed\\CaliSpeed\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\chw11\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Kameron\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -56,6 +55,10 @@
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[2.1.9, )"
             }
           },
           "imports": [
