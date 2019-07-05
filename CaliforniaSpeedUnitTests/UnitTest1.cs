@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CaliforniaSpeedLibrary;
 
 namespace CaliforniaSpeedUnitTests
 {
@@ -8,6 +9,7 @@ namespace CaliforniaSpeedUnitTests
     [TestMethod]
     public void TestMethod1()
     {
+        Game game = new Game();
     }
   }
 }
