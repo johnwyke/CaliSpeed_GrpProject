@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'windows-2019'
 
 variables:
   solution: '**/*.sln'
@@ -19,7 +19,7 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: '**/CaliSpeed.csproj'
     arguments: '--configuration Release'
 - task: DotNetCoreCLI@2
   displayName: Run Tests

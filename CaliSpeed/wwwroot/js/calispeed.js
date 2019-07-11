@@ -151,7 +151,7 @@ window.onload = function () {
     message.style.fontSize = 72;
     app.stage.addChild(message);
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 2; j++) {
 
         // get a random card
@@ -232,3 +232,18 @@ function onDragMove() {
 }
 
 var club = null;
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
+
+connection.start().then(function () {
+  console.log("Connection started");
+});
+
+function sendPlay(row, column, row1, column2) {
+  connection.invoke("playCard", row, column, row2, column2);
+}
+
+startSocket();
+
+
+

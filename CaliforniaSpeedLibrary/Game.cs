@@ -1,10 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CaliforniaSpeedLibrary
 {
   public class Game
   {
+        public delegate Task NewCardDelegate(int player, int row, int column, Card card);
+        /// <summary>
+        /// Event called when a new card has been played
+        /// </summary>
+        public event NewCardDelegate NewCardEvent;
+
+        public delegate Task NewBoardDelegate(Card[,] cards);
+        /// <summary>
+        /// New board has been received
+        /// </summary>
+        public event NewBoardDelegate NewBoardEvent;
 
 
         public Card[,] play = new Card[2, 4];
@@ -50,13 +62,13 @@ namespace CaliforniaSpeedLibrary
         public void CardsMatching()
         {
             //check if any cards matching 
-            // state become disable permenentaly
+            // state become disable permanently
 
 
         }
 
         /// <summary>
-        /// distripiute cards each player should have 26 cards 22 in hand and 4 on table
+        /// distribute cards each player should have 26 cards 22 in hand and 4 on table
         /// </summary>
         public void DistributeCards()
         {
@@ -85,7 +97,7 @@ namespace CaliforniaSpeedLibrary
         /// <param name="player"></param>
         /// <param name="card"></param>
         /// <returns></returns>
-        public bool PlayCards(int player, Card card)
+        public bool PlayCards(int player, int row, int column)
         {
             return false;
         }
@@ -99,7 +111,7 @@ namespace CaliforniaSpeedLibrary
 
         }
 
-        public void checkWinner()
+        public void CheckWinner()
         {
              /* player cover cards
              * no matches state

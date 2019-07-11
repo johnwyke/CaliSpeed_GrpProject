@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using CaliSpeed.SignalR_Hubs;
+using CaliSpeed.SignalRHubs;
 
 namespace CaliSpeed
 {
@@ -35,6 +35,7 @@ namespace CaliSpeed
                 routes =>
                 {
                     routes.MapHub<ExampleHub>("/ExampleHub");
+                    routes.MapHub<GameHub>("/GameHub");
                 }
             );
 
