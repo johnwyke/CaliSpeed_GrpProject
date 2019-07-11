@@ -10,6 +10,9 @@ namespace CaliforniaSpeedLibrary
         public Card[,] play = new Card[2, 4];
         public List<Card> player1 = new List<Card>();
         public List<Card> player2 = new List<Card>();
+        public Card [] Deck = new Card[52];
+
+        public Game() { init_Deck(); }// ConStructor
 
 
         public enum Suit
@@ -33,12 +36,12 @@ namespace CaliforniaSpeedLibrary
             Ten,
             Jack,
             Queen,
-            King,
+            King
         }
         public class Card
         { 
-            public Suit Suit { get; set; }
-            public Face Face { get; set; }
+            public int Suit { get; set; }
+            public int Face { get; set; }
         }
 
         /// <summary>
@@ -55,9 +58,25 @@ namespace CaliforniaSpeedLibrary
         /// <summary>
         /// distripiute cards each player should have 26 cards 22 in hand and 4 on table
         /// </summary>
-        public void DistreputeCards()
+        public void DistributeCards()
         {
+            Random rand = new Random();
+            int newNumb = 0;
+            Card temp; 
+            // Build the Deck of Cards make sure that the cards are not duplicated
+            // Shuffle the cards. 
+            for (int i =Deck.Length; i>0; i--)
+            {
+                newNumb = rand.Next(i + 1);
+                temp = Deck[i];
+                Deck[i] = Deck[newNumb];
+                Deck[newNumb] = temp;
 
+            }
+
+            // Pull out 8 random cards 
+
+            // divide the rest between two players 
         }
 
         /// <summary>
@@ -86,6 +105,34 @@ namespace CaliforniaSpeedLibrary
              * no matches state
              * player wins/lose        
              */
+
+        }
+
+        //
+        private void init_Deck()
+        {
+            int counter = 0;
+            // Need to go through the Suit enum and then loop through the Card Enum. Builds a deck of Unique cards
+            foreach (int cardSuit in Enum.GetValues(typeof(Suit)))
+            {
+                // For Each Value of the card
+                foreach ( int cardFace in Enum.GetValues(typeof(Face)))
+                {
+                    Card newCard = new Card();
+
+                    newCard.Suit = cardSuit;
+                    newCard.Face = cardFace;
+
+                    Deck[counter] = newCard;
+                    counter++;
+                }
+            }
+            // Test Displaying the deck 
+           foreach (Card item in Deck)
+            {
+                Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
+            }
+
 
         }
 
