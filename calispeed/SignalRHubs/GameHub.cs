@@ -40,7 +40,8 @@ namespace CaliSpeed.SignalRHubs
             if (game == null)
             {
                 game = new Game();
-                
+                game.NewBoardEvent += Game_NewBoardEvent;
+                game.NewCardEvent += Game_CardPlayedEvent;
             }
             return game;
         }

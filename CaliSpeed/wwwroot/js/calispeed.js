@@ -73,6 +73,7 @@ var app = null;
 let cardSprites = [];
 
 var cardback = null;
+var message = null;
 
 window.onload = function () {
   let type = "WebGL";
@@ -82,7 +83,7 @@ window.onload = function () {
 
   PIXI.utils.sayHello(type);
 
-  const app = new PIXI.Application({
+  app = new PIXI.Application({
     width: 100,
     height: 100,
     autoDensity: true,
@@ -146,9 +147,10 @@ window.onload = function () {
     //var board = generateSampleBoard();
     //app.stage.addChild(club);
 
-    let message = new PIXI.Text("California Speed");
+    message = new PIXI.Text("California Speed");
     message.style.fill = "#FFFFFF";
     message.style.fontSize = 72;
+    message.anchor.set(.5, 0);
     app.stage.addChild(message);
 
     for (let i = 0; i < 4; i++) {
@@ -162,12 +164,8 @@ window.onload = function () {
         if (card !== undefined) {
           var sprite = new PIXI.Sprite(PIXI.Loader.shared.resources[card.image].texture);
           let cardRatio = sprite.width / sprite.height;
-          sprite.height = app.screen.height * .25;
-          sprite.width = sprite.height * cardRatio;
-          app.stage.addChild(sprite);
-          sprite.position.set(i * sprite.width * 1.25 + app.screen.width * .4,
-            j * sprite.height * 1.25 + app.screen.height * .3);
           
+          app.stage.addChild(sprite);
           sprite.anchor.set(0.5);
           cardSprites.push(sprite);
         } else {
@@ -176,8 +174,8 @@ window.onload = function () {
       }
     }
     app.stage.addChild(cardback);
+    adjustSpritesLocation();
   }
-
 };
 
 requestAnimationFrame(animate);
@@ -189,12 +187,63 @@ function isSelectionCardHovering(value) {
     && cardback.position.y >= bounds.top && cardback.position.y <= bounds.bottom;
 }
 
+window.onresize = function (event) {
+  //app.renderer.resize(window.innerWidth, window.innerHeight);
+  app.resize(window.innerWidth, window.innerHeight);
+  adjustSpritesLocation();
+  app.renderer.render(app.stage);
+};
+
+function adjustSpritesLocation() {
+
+  // move text
+  message.x = app.renderer.width / 2;
+
+  
+
+
+  // move play field
+  for (let i = 0; i < cardSprites.length; i++) {
+    let row = Math.floor(i / 4);
+    let column = i % 4;
+    let sprite = cardSprites[i];
+    let cardRatio = sprite.height / sprite.width;
+    //console.log('sprite width:', sprite.width, 'screen width:', app.renderer.width);
+    sprite.width = app.renderer.width * .2;
+    if (sprite.width > 200) {
+      sprite.width = 200;
+    }
+    if (sprite.height > app.renderer.height / 2.5) {
+      console.log('Height override');
+      sprite.height = app.renderer.height / 2.5;
+      sprite.width = (1 - cardRatio) * sprite.height;
+    }
+    sprite.height = sprite.width * cardRatio;
+    
+    //console.log(sprite);
+    sprite.position.set((column - 2) * sprite.width * 1.1 + app.renderer.width * .5 + sprite.width / 2,
+      row * sprite.height * 1.1 + app.renderer.height * .24);
+    //console.log('row:', row, 'column:', column, 'position', sprite.position);
+  }
+
+  if (cardSprites.length > 0) {
+    cardback.width = cardSprites[0].width;
+    cardback.height = cardSprites[0].height;
+    resetCardBackLocation();
+  }
+}
+
+function resetCardBackLocation() {
+  cardback.x = app.renderer.width * .5;
+  cardback.y = app.renderer.height - cardback.height * .25;
+}
+
 function animate() {
 
   requestAnimationFrame(animate);
 
   // render the stage
-  //PIXI.renderer.render(stage);
+  //app.renderer.render(app.stage);
 }
 
 function onDragStart(event) {
@@ -210,6 +259,16 @@ function onDragEnd() {
   this.alpha = 1;
 
   this.dragging = false;
+
+  for (let i = 0; i < cardSprites.length; i++) {
+    let sprite = cardSprites[i];
+    if (isSelectionCardHovering(sprite)) {
+      let row = Math.floor(i / 4);
+      let col = i % 4;
+      sendPlay(row, column);
+    }
+  }
+
 
   // set the interaction data to null
   this.data = null;
@@ -239,7 +298,7 @@ connection.start().then(function () {
   console.log("Connection started");
 });
 
-function sendPlay(row, column, row1, column2) {
+function sendPlay(row, column) {
   connection.invoke("playCard", row, column, row2, column2);
 }
 
