@@ -7,7 +7,7 @@ namespace CaliforniaSpeedUnitTests
   public class UnitTest1
   {
     [TestMethod]
-    public void TestMethod1()
+    public void init_Game_Deck()
     {
         Game game = new Game();
     }
@@ -17,7 +17,7 @@ namespace CaliforniaSpeedUnitTests
         /// </summary>
        /* public bool checkPlayerCardCount(ref List<Card> myHand)
         {
-            //check the counr of my hand
+            //check the count of my hand
             if (myHand.Count >= 5)
                 return false;
             

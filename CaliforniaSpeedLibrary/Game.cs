@@ -68,27 +68,59 @@ namespace CaliforniaSpeedLibrary
         }
 
         /// <summary>
-        /// distribute cards each player should have 26 cards 22 in hand and 4 on table
+        /// This is called by the Shuffle Deck
+        /// distributed cards each player should have 26 cards 22 in hand and 4 on table
         /// </summary>
         public void DistributeCards()
+        { 
+            // Pull out the back 8 cards of the deck 
+            for(int i= 0; i < Deck.Length-8; i++)
+            {
+                // This is where we create the user list of cards. 
+                // divide the rest between two players
+                if (i % 2 == 0)
+                {
+                    // Then it should be player One Cards
+                    player1.Add(Deck[i]);
+                }
+                else if (i % 2 == 1)
+                {
+                    // Then this card should go to Player 2
+                    player2.Add(Deck[i]);
+                }
+            }
+            // TODO: Fill the "Play" 2d Array with the remaining cards. 
+
+
+           
+
+           
+        }
+        /// <summary>
+        /// This Is called by Init Deck. 
+        /// Shuffle the deck of cards and test the output. 
+        /// </summary>
+        private void ShuffleDeck()
         {
             Random rand = new Random();
             int newNumb = 0;
-            Card temp; 
+            Card temp;
             // Build the Deck of Cards make sure that the cards are not duplicated
             // Shuffle the cards. 
-            for (int i =Deck.Length; i>0; i--)
+            for (int i = Deck.Length - 1; i >= 0; i--)
             {
-                newNumb = rand.Next(i + 1);
+                newNumb = rand.Next(i);
                 temp = Deck[i];
                 Deck[i] = Deck[newNumb];
                 Deck[newNumb] = temp;
 
+            }// End Loop 
+            // Test Displaying the deck 
+            foreach (Card item in Deck)
+            {
+                Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
             }
-
-            // Pull out 8 random cards 
-
-            // divide the rest between two players 
+            DistributeCards();
         }
 
         /// <summary>
@@ -139,12 +171,8 @@ namespace CaliforniaSpeedLibrary
                     counter++;
                 }
             }
-            // Test Displaying the deck 
-           foreach (Card item in Deck)
-            {
-                Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
-            }
-
+            ShuffleDeck();
+          
 
         }
 
