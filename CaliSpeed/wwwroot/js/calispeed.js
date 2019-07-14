@@ -178,6 +178,7 @@ window.onload = function () {
   }
 };
 
+var drawFrames = 0;
 requestAnimationFrame(animate);
 
 function isSelectionCardHovering(value) {
@@ -187,12 +188,27 @@ function isSelectionCardHovering(value) {
     && cardback.position.y >= bounds.top && cardback.position.y <= bounds.bottom;
 }
 
+function animate() {
+
+  requestAnimationFrame(animate);
+
+  if (drawFrames > 0) {
+    app.resize(window.innerWidth, window.innerHeight);
+    adjustSpritesLocation();
+    app.renderer.render(app.stage);
+    drawFrames--;
+  }
+}
+
 window.onresize = function (event) {
   //app.renderer.resize(window.innerWidth, window.innerHeight);
   app.resize(window.innerWidth, window.innerHeight);
+  app.renderer.render(app.stage);
   adjustSpritesLocation();
   app.renderer.render(app.stage);
+  drawFrames = 10;
 };
+
 
 function adjustSpritesLocation() {
 
@@ -207,18 +223,21 @@ function adjustSpritesLocation() {
     let row = Math.floor(i / 4);
     let column = i % 4;
     let sprite = cardSprites[i];
-    let cardRatio = sprite.height / sprite.width;
+    let cardRatio = 1.452; //calculated from sprite.height / sprite.width;
+    console.log(cardRatio);
     //console.log('sprite width:', sprite.width, 'screen width:', app.renderer.width);
     sprite.width = app.renderer.width * .2;
-    if (sprite.width > 200) {
-      sprite.width = 200;
-    }
-    if (sprite.height > app.renderer.height / 2.5) {
-      console.log('Height override');
-      sprite.height = app.renderer.height / 2.5;
-      sprite.width = (1 - cardRatio) * sprite.height;
-    }
     sprite.height = sprite.width * cardRatio;
+    if (sprite.width > 200) {
+      console.log('max width override');
+      sprite.width = 200;
+      sprite.height = sprite.width * cardRatio;
+    }
+    if (sprite.height > app.renderer.height / 2.75) {
+      console.log('height override');
+      sprite.height = app.renderer.height / 3;
+      sprite.width = sprite.height / cardRatio;
+    }
     
     //console.log(sprite);
     sprite.position.set((column - 2) * sprite.width * 1.1 + app.renderer.width * .5 + sprite.width / 2,
@@ -236,14 +255,6 @@ function adjustSpritesLocation() {
 function resetCardBackLocation() {
   cardback.x = app.renderer.width * .5;
   cardback.y = app.renderer.height - cardback.height * .25;
-}
-
-function animate() {
-
-  requestAnimationFrame(animate);
-
-  // render the stage
-  //app.renderer.render(app.stage);
 }
 
 function onDragStart(event) {
@@ -265,7 +276,7 @@ function onDragEnd() {
     if (isSelectionCardHovering(sprite)) {
       let row = Math.floor(i / 4);
       let col = i % 4;
-      sendPlay(row, column);
+      sendPlay(row, col);
     }
   }
 

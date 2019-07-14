@@ -10,11 +10,11 @@ namespace CaliforniaSpeedLibrary
         /// <summary>
         /// Event called when a new card has been played
         /// </summary>
-        public event NewCardDelegate NewCardEvent;
+        public event NewCardDelegate NewCardPlayedEvent;
 
         public delegate Task NewBoardDelegate(Card[,] cards);
         /// <summary>
-        /// New board has been received
+        /// Called when the entire board changes and needs to be updated
         /// </summary>
         public event NewBoardDelegate NewBoardEvent;
 
