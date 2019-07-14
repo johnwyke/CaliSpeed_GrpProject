@@ -223,7 +223,7 @@ function adjustSpritesLocation() {
     let column = i % 4;
     let sprite = cardSprites[i];
     let cardRatio = 1.452; //calculated from sprite.height / sprite.width;
-    console.log(cardRatio);
+    //console.log(cardRatio);
     //console.log('sprite width:', sprite.width, 'screen width:', app.renderer.width);
     sprite.width = app.renderer.width * .2;
     sprite.height = sprite.width * cardRatio;
