@@ -201,19 +201,12 @@ function animate() {
 }
 
 window.onresize = function (event) {
-<<<<<<< HEAD
-    //app.renderer.resize(window.innerWidth, window.innerHeight);
-    app.resize(window.innerWidth, window.innerHeight);
-    adjustSpritesLocation();
-    app.renderer.render(app.stage);
-=======
   //app.renderer.resize(window.innerWidth, window.innerHeight);
   app.resize(window.innerWidth, window.innerHeight);
   app.renderer.render(app.stage);
   adjustSpritesLocation();
   app.renderer.render(app.stage);
   drawFrames = 10;
->>>>>>> master
 };
 
 
@@ -224,38 +217,6 @@ function adjustSpritesLocation() {
 
 
 
-<<<<<<< HEAD
-
-    // move play field
-    for (let i = 0; i < cardSprites.length; i++) {
-        let row = Math.floor(i / 4);
-        let column = i % 4;
-        let sprite = cardSprites[i];
-        let cardRatio = sprite.height / sprite.width;
-        //console.log('sprite width:', sprite.width, 'screen width:', app.renderer.width);
-        sprite.width = app.renderer.width * .2;
-        if (sprite.width > 200) {
-            sprite.width = 200;
-        }
-        if (sprite.height > app.renderer.height / 2.5) {
-            console.log('Height override');
-            sprite.height = app.renderer.height / 2.5;
-            sprite.width = (1 - cardRatio) * sprite.height;
-        }
-        sprite.height = sprite.width * cardRatio;
-
-        //console.log(sprite);
-        sprite.position.set((column - 2) * sprite.width * 1.1 + app.renderer.width * .5 + sprite.width / 2,
-            row * sprite.height * 1.1 + app.renderer.height * .24);
-        //console.log('row:', row, 'column:', column, 'position', sprite.position);
-    }
-
-    if (cardSprites.length > 0) {
-        cardback.width = cardSprites[0].width;
-        cardback.height = cardSprites[0].height;
-        resetCardBackLocation();
-    }
-=======
   // move play field
   for (let i = 0; i < cardSprites.length; i++) {
     let row = Math.floor(i / 4);
@@ -288,7 +249,6 @@ function adjustSpritesLocation() {
     cardback.height = cardSprites[0].height;
     resetCardBackLocation();
   }
->>>>>>> master
 }
 
 function resetCardBackLocation() {
@@ -296,17 +256,6 @@ function resetCardBackLocation() {
     cardback.y = app.renderer.height - cardback.height * .25;
 }
 
-<<<<<<< HEAD
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    // render the stage
-    //app.renderer.render(app.stage);
-}
-
-=======
->>>>>>> master
 function onDragStart(event) {
     // store a reference to the data
     // the reason for this is because of multitouch
@@ -321,22 +270,12 @@ function onDragEnd() {
 
     this.dragging = false;
 
-<<<<<<< HEAD
-    for (let i = 0; i < cardSprites.length; i++) {
-        let sprite = cardSprites[i];
-        if (isSelectionCardHovering(sprite)) {
-            let row = Math.floor(i / 4);
-            let col = i % 4;
-            sendPlay(row, col);
-        }
-=======
   for (let i = 0; i < cardSprites.length; i++) {
     let sprite = cardSprites[i];
     if (isSelectionCardHovering(sprite)) {
       let row = Math.floor(i / 4);
       let col = i % 4;
       sendPlay(row, col);
->>>>>>> master
     }
 
 
