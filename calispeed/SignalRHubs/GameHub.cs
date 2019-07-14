@@ -1,6 +1,7 @@
 ﻿using CaliforniaSpeedLibrary;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace CaliSpeed.SignalRHubs
 {
@@ -20,18 +21,19 @@ namespace CaliSpeed.SignalRHubs
             var game = GetGame();
             if (game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("PlayResult", true);
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
             }
             else
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("PlayResult", false);
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", false);
             }
         }
 
         public async Task GetCardsList()
         {
             var game = GetGame();
-            await Clients.Client(Context.ConnectionId).SendAsync("AllCards", game.play);
+            string gameString = JsonConvert.SerializeObject(game.play);
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", gameString);
         }
 
 
