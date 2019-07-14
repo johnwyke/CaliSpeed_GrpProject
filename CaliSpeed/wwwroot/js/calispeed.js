@@ -228,12 +228,12 @@ function adjustSpritesLocation() {
     sprite.width = app.renderer.width * .2;
     sprite.height = sprite.width * cardRatio;
     if (sprite.width > 200) {
-      console.log('max width override');
+      //console.log('max width override');
       sprite.width = 200;
       sprite.height = sprite.width * cardRatio;
     }
     if (sprite.height > app.renderer.height / 2.75) {
-      console.log('height override');
+      //console.log('height override');
       sprite.height = app.renderer.height / 3;
       sprite.width = sprite.height / cardRatio;
     }
@@ -269,18 +269,18 @@ function onDragEnd() {
     this.alpha = 1;
 
     this.dragging = false;
+    for (let i = 0; i < cardSprites.length; i++) {
+        let sprite = cardSprites[i];
+        if (isSelectionCardHovering(sprite)) {
+            let row = Math.floor(i / 4);
+            let col = i % 4;
+            sendPlay(row, col);
+        }
 
-  for (let i = 0; i < cardSprites.length; i++) {
-    let sprite = cardSprites[i];
-    if (isSelectionCardHovering(sprite)) {
-      let row = Math.floor(i / 4);
-      let col = i % 4;
-      sendPlay(row, col);
+
+        // set the interaction data to null
+        this.data = null;
     }
-
-
-    // set the interaction data to null
-    this.data = null;
 }
 
 function onDragMove() {
@@ -301,79 +301,126 @@ function onDragMove() {
 
 var club = null;
 
+
+/**** INITIATE SIGNALR CONNECTION ****
+ *  
+ *  Creates connection to GameHub
+ *  Once connected to hub, gets the cardsList, then does anything
+ *  else we need it to do
+ *  
+ */
+
+// Instantiate connection
 var connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
 
+// Once connected, run any desired startup code here
 connection.start().then
 (
     function ()
     {
-        console.log("Connection started");
-
-        /* TESTING OTHER FUNCTIONS ON STARTUP */
-        sendPlay(0, 1);
+        //console.log("Connection started");
         getCardsList();
     }
 );
 
-// SEND PLAY -> RECEIVE PLAY RESULT
-function sendPlay(row, column)
-{
-    connection.invoke("PlayCard", row, column/*, row2, column2*/);
-    // why is there two rows and columns?
+
+
+/**** GET CARDS LIST, RECEIVE CARDS LIST, and UPDATE CARDS ****
+ * 
+ * asks GameHub for cardsList
+ * informs user / client that cardsList was received
+ * listens for Game.cs to ask client to update display of cards
+ *
+ */
+
+// Ask GameHub for cardsList
+function getCardsList() {
+    connection.invoke("GetCardsList");
 }
 
+// Once GameHub responds...
+connection.on
+    (
+        "ReceiveCardsList",
+        function (jsonCardsList) {
+            //console.log(jsonCardsList); //displays string cardsList
+            var cardsList = JSON.parse(jsonCardsList);
+            //console.log(cardsList); //displays JS object cardsList
+
+            if (cardsList) {
+                console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
+            }
+            else {
+                console.log("No cardsList received.");
+            }
+        }
+    )
+
+// Once Game.cs tells client to update cardsList...
+
+connection.on
+    (
+        "Update_AllCards",
+        function (jsonCards) {
+            console.log(jsonCards); //displays string cards
+            var cards = JSON.parse(jsonCards);
+            console.log(cards); //displays JS object cards
+
+            //update a ton of stuff
+            console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
+        }
+    )
+
+
+
+/**** SEND PLAY, RECEIVE PLAY RESULT, and UPDATE CARD ****
+ * 
+ * Asks GameHub to handle played card
+ * Informs user / client that card was played successfully
+ * Game.cs tells user / client to update display to show card
+ * 
+ */
+
+// Ask GameHub to play a card.
+function sendPlay(row, column)
+{
+    connection.invoke("PlayCard", row, column);
+}
+
+// Once GameHub responds...
 connection.on
 (
     "ReceivePlayResult",
     function (result) {
-        console.log("Play Result: ");
+
+        //console.log("Play Result: ");
+
         if (result)
         {
-            console.log("Success");
+            //do whatever we want here
+
+            //console.log("Success");
         }
         else
         {
-            console.log("Fail");
+            //play 'fail' notification
+
+            //console.log("Fail");
         }
     }
 )
 
-// GET CARDS LIST -> RECEIVE CARDS LIST
-
-function getCardsList()
-{
-    connection.invoke("GetCardsList");
-}
-
+// Once Game.cs tells client to update display of new card
 connection.on
-(
-    "ReceiveCardsList",
-    function (jsonCardsList)
-    {
-        //console.log(jsonCardsList);
-        var cardsList = JSON.parse(jsonCardsList);
-        //console.log(cardsList);
+    (
+        "Update_NewCard",
+        function (jsonNewCard) {
+            console.log(jsonNewCard); //displays string cards
+            var cards = JSON.parse(jsonNewCard);
+            console.log(jsonNewCard); //displays JS object cards
 
-        if (cardsList[0][0]) {
-            console.log("Received Cards: ");
-            
-            for (i = 0; i < cardsList[0].length; i++) {
-                for (j = 0; j < cardsList[1].length; j++) {
-                    console.log(cardsList[i][j].Face);
-                }
-            }
+            //update a ton of stuff
+            console.log("UPDATE NOW TO SHOW NEW CARD");
         }
-        else {
-            console.log("No Cards Received");
-        }
-    }
-)
+    )
 
-// CARD PLAYED EVENT (???????) -> RESPONSE (????????)
-
-function 
-
-
-
-
-//startSocket(); //NOT DEFINED... WHAT IS IT?
