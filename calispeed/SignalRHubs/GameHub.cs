@@ -58,8 +58,7 @@ namespace CaliSpeed.SignalRHubs
         public async Task GetCardsList()
         {
             var game = GetGame();
-            string gameString = JsonConvert.SerializeObject(game.Deck/* insert needed property/var here */);
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", gameString);
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.Deck);
         }
 
 
@@ -88,8 +87,7 @@ namespace CaliSpeed.SignalRHubs
         /// <returns></returns>
         private async Task Game_NewBoardEvent(Game.Card[,] cards)
         {
-            string cardsString = JsonConvert.SerializeObject(cards/* insert needed property/var here */);
-            await Clients.All.SendAsync("Update_AllCards", cardsString);
+            await Clients.All.SendAsync("Update_AllCards", cards);
         }
         /// <summary>
         /// (Kameron): Ran when Game.cs tells calispeed.js that a new
@@ -103,8 +101,7 @@ namespace CaliSpeed.SignalRHubs
         private async Task Game_NewCardPlayedEvent(int player, int row, int column, Game.Card card)
         {
             CardPlay play = new CardPlay() { Card = card, Column = column, Row = row };
-            string newCardString = JsonConvert.SerializeObject(play/* insert needed property/var here */);
-            await Clients.All.SendAsync("Update_NewCard", newCardString);
+            await Clients.All.SendAsync("Update_NewCard", play);
         }
     }
 }

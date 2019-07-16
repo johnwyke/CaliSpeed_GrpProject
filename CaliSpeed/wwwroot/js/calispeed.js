@@ -342,10 +342,8 @@ function getCardsList() {
 connection.on
     (
         "ReceiveCardsList",
-        function (jsonCardsList) {
-            //console.log(jsonCardsList); //displays string cardsList
-            var cardsList = JSON.parse(jsonCardsList);
-            //console.log(cardsList); //displays JS object cardsList
+        function (cardsList) {
+            console.log(cardsList); //displays JS object cardsList
 
             if (cardsList) {
                 console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
@@ -361,15 +359,14 @@ connection.on
 connection.on
     (
         "Update_AllCards",
-        function (jsonCards) {
-            console.log(jsonCards); //displays string cards
-            var cards = JSON.parse(jsonCards);
+        function (cards) {
             console.log(cards); //displays JS object cards
 
             //update a ton of stuff
             console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
         }
     )
+
 
 
 
@@ -414,10 +411,8 @@ connection.on
 connection.on
     (
         "Update_NewCard",
-        function (jsonNewCard) {
-            console.log(jsonNewCard); //displays string cards
-            var cards = JSON.parse(jsonNewCard);
-            console.log(jsonNewCard); //displays JS object cards
+        function (newCard) {
+            console.log(newCard); //displays string cards
 
             //update a ton of stuff
             console.log("UPDATE NOW TO SHOW NEW CARD");
