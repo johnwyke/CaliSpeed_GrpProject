@@ -57,13 +57,16 @@ namespace CaliforniaSpeedLibrary
         }
 
         /// <summary>
-        /// if there is any cards matches 
+        /// if there is any cards matches
+        /// (Kameron): We still need a state property in the
+        /// Card class that tracks whether or not a card has or 
+        /// was matched, right? Let me know when this state is
+        /// in place
         /// </summary>
         public void CardsMatching()
         {
             //check if any cards matching 
             // state become disable permanently
-
 
         }
 
