@@ -144,6 +144,7 @@ window.onload = function () {
         cardback.position.set(app.screen.width * .2, app.screen.height * .5);
 
         //club = new PIXI.Sprite(PIXI.loader.resources["images/10c.png"].texture);
+
         //var board = generateSampleBoard();
         //app.stage.addChild(club);
 
@@ -325,6 +326,7 @@ connection.start().then
 
 
 
+
 /**** GET CARDS LIST, RECEIVE CARDS LIST, and UPDATE CARDS ****
  * 
  * asks GameHub for cardsList
@@ -366,8 +368,6 @@ connection.on
             console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
         }
     )
-
-
 
 
 /**** SEND PLAY, RECEIVE PLAY RESULT, and UPDATE CARD ****

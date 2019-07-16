@@ -102,6 +102,7 @@ namespace CaliSpeed.SignalRHubs
         {
             CardPlay play = new CardPlay() { Card = card, Column = column, Row = row };
             await Clients.All.SendAsync("Update_NewCard", play);
+
         }
     }
 }
