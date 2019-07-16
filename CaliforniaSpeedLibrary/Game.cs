@@ -19,12 +19,15 @@ namespace CaliforniaSpeedLibrary
         public event NewBoardDelegate NewBoardEvent;
 
 
-        public Card[,] play = new Card[2, 4];
-        public List<Card> player1 = new List<Card>();
-        public List<Card> player2 = new List<Card>();
-        public Card [] Deck = new Card[52];
+        public Deck[,] playgameBoard = new Deck[2, 4];
+        public Deck player1 = new Deck();
+        public Deck player2 = new Deck();
+        public Card [] wholeDeck = new Card[52];
 
-        public Game() { init_Deck(); }// ConStructor
+        public Game()
+        {
+            init_Deck();
+        }// ConStructor
 
 
         public enum Suit
@@ -52,52 +55,65 @@ namespace CaliforniaSpeedLibrary
         }
         public class Card
         { 
-            public int Suit { get; set; }
-            public int Face { get; set; }
+            public Suit Suit { get; set; }
+            public Face Face { get; set; }
         }
 
-        /// <summary>
-        /// if there is any cards matches
-        /// (Kameron): We still need a state property in the
-        /// Card class that tracks whether or not a card has or 
-        /// was matched, right? Let me know when this state is
-        /// in place
-        /// </summary>
-        public void CardsMatching()
+        public class Deck
         {
-            //check if any cards matching 
-            // state become disable permanently
+            public List<Card> cardList = new List<Card>();
+            public bool matchPresent { get; set; }
 
+
+            public Deck()
+            {
+               cardList.Clear();
+               matchPresent = false;
+            }
+            
         }
+
 
         /// <summary>
         /// This is called by the Shuffle Deck
         /// distributed cards each player should have 26 cards 22 in hand and 4 on table
         /// </summary>
         public void DistributeCards()
-        { 
+        {
+            int counter = wholeDeck.Length - 8;
             // Pull out the back 8 cards of the deck 
-            for(int i= 0; i < Deck.Length-8; i++)
+            for(int i= 0; i <= wholeDeck.Length-8; i++)
             {
                 // This is where we create the user list of cards. 
                 // divide the rest between two players
                 if (i % 2 == 0)
                 {
                     // Then it should be player One Cards
-                    player1.Add(Deck[i]);
+                    player1.cardList.Add(wholeDeck[i]);
                 }
                 else if (i % 2 == 1)
                 {
                     // Then this card should go to Player 2
-                    player2.Add(Deck[i]);
+                    player2.cardList.Add(wholeDeck[i]);
                 }
             }
             // TODO: Fill the "Play" 2d Array with the remaining cards. 
-
-
-           
-
-           
+            foreach (Deck item in playgameBoard)
+            {
+                item.cardList.Add(wholeDeck[counter]);
+                counter++;
+            }
+            //Console.WriteLine("Player ONes Cards");
+            //foreach (Card item in player1.cardList)
+            //{
+            //    Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
+            //}
+            //Console.WriteLine("");
+            //Console.WriteLine("Player 2's Cards.");
+            //foreach (Card item in player2.cardList)
+            //{
+            //    Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
+            //}
         }
         /// <summary>
         /// This Is called by Init Deck. 
@@ -110,20 +126,20 @@ namespace CaliforniaSpeedLibrary
             Card temp;
             // Build the Deck of Cards make sure that the cards are not duplicated
             // Shuffle the cards. 
-            for (int i = Deck.Length - 1; i >= 0; i--)
+            for (int i = wholeDeck.Length - 1; i >= 0; i--)
             {
                 newNumb = rand.Next(i);
-                temp = Deck[i];
-                Deck[i] = Deck[newNumb];
-                Deck[newNumb] = temp;
+                temp = wholeDeck[i];
+                wholeDeck[i] = wholeDeck[newNumb];
+                wholeDeck[newNumb] = temp;
 
             }// End Loop 
             // Test Displaying the deck 
-            foreach (Card item in Deck)
+            foreach (Card item in wholeDeck)
             {
                 Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
             }
-            DistributeCards();
+           DistributeCards();
         }
 
         /// <summary>
@@ -134,6 +150,8 @@ namespace CaliforniaSpeedLibrary
         /// <returns></returns>
         public bool PlayCards(int player, int row, int column)
         {
+            // build card object
+
             return false;
         }
 
@@ -143,6 +161,14 @@ namespace CaliforniaSpeedLibrary
         /// </summary>
         public void ClearBoard()
         {
+            foreach (Deck boardSell in playgameBoard)
+            {
+                boardSell.cardList.Clear();
+            }
+            
+            player1.cardList.Clear();
+            player2.cardList.Clear();
+            ShuffleDeck();
 
         }
 
@@ -160,17 +186,17 @@ namespace CaliforniaSpeedLibrary
         {
             int counter = 0;
             // Need to go through the Suit enum and then loop through the Card Enum. Builds a deck of Unique cards
-            foreach (int cardSuit in Enum.GetValues(typeof(Suit)))
+            foreach (Suit cardSuit in Enum.GetValues(typeof(Suit)))
             {
                 // For Each Value of the card
-                foreach ( int cardFace in Enum.GetValues(typeof(Face)))
+                foreach (Face cardFace in Enum.GetValues(typeof(Face)))
                 {
                     Card newCard = new Card();
 
                     newCard.Suit = cardSuit;
                     newCard.Face = cardFace;
 
-                    Deck[counter] = newCard;
+                    wholeDeck[counter] = newCard;
                     counter++;
                 }
             }
