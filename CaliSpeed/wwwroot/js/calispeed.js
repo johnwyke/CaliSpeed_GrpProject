@@ -1,7 +1,7 @@
-﻿let cards = [{ name: "10c", image: "images/10c.png" },
-{ name: "10d", image: "images/10d.png" },
-{ name: "10h", image: "images/10h.png" },
-{ name: "10s", image: "images/10s.png" },
+﻿let cards = [{ name: "1c", image: "images/1c.png" },
+{ name: "1d", image: "images/1d.png" },
+{ name: "1h", image: "images/1h.png" },
+{ name: "1s", image: "images/1s.png" },
 { name: "2c", image: "images/2c.png" },
 { name: "2d", image: "images/2d.png" },
 { name: "2h", image: "images/2h.png" },
@@ -34,22 +34,22 @@
 { name: "9d", image: "images/9d.png" },
 { name: "9h", image: "images/9h.png" },
 { name: "9s", image: "images/9s.png" },
-{ name: "1c", image: "images/1c.png" },
-{ name: "1d", image: "images/1d.png" },
-{ name: "1h", image: "images/1h.png" },
-{ name: "1s", image: "images/1s.png" },
+{ name: "10c", image: "images/10c.png" },
+{ name: "10d", image: "images/10d.png" },
+{ name: "10h", image: "images/10h.png" },
+{ name: "10s", image: "images/10s.png" },
 { name: "11c", image: "images/11c.png" },
 { name: "11d", image: "images/11d.png" },
 { name: "11h", image: "images/11h.png" },
 { name: "11s", image: "images/11s.png" },
-{ name: "13c", image: "images/13c.png" },
-{ name: "13d", image: "images/13d.png" },
-{ name: "13h", image: "images/13h.png" },
-{ name: "13s", image: "images/13s.png" },
 { name: "12c", image: "images/12c.png" },
 { name: "12d", image: "images/12d.png" },
 { name: "12h", image: "images/12h.png" },
-{ name: "12s", image: "images/12s.png" }];
+{ name: "12s", image: "images/12s.png" },
+{ name: "13c", image: "images/13c.png" },
+{ name: "13d", image: "images/13d.png" },
+{ name: "13h", image: "images/13h.png" },
+{ name: "13s", image: "images/13s.png" }];
 
 var card_back = 'card_back_black.png';
 
@@ -349,6 +349,7 @@ connection.on
 
             if (cardsList) {
                 console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
+                
             }
             else {
                 console.log("No cardsList received.");
@@ -419,3 +420,16 @@ connection.on
         }
     )
 
+
+
+
+/**** GET CARD IMAGE ****
+ *
+ * Receives a Game.cs Card object
+ * Returns the corresponding JS object from the cards[] array
+ * Suits are alphabetical: (0) clubs, (1) diamonds, (2) hearts, (3) spades
+ */
+
+function getCardImage(gameCard) {
+    return cards[((gameCard.face) * 4 + gameCard.suit)];
+}
