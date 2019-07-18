@@ -99,7 +99,7 @@ namespace CaliforniaSpeedLibrary
                     player2.cardList.Add(wholeDeck[i]);
                 }
             }
-            // TODO: Fill the "Play" 2d Array with the remaining cards. 
+            //  Fill the "Play" 2d Array with the remaining cards. 
             foreach (Deck Cell in playgameBoard)
             {
                 Deck boardCell = new Deck();
