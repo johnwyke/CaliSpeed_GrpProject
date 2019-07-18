@@ -73,6 +73,8 @@ namespace CaliforniaSpeedLibrary
             
         }
 
+    
+
 
         /// <summary>
         /// This is called by the Shuffle Deck
@@ -142,12 +144,29 @@ namespace CaliforniaSpeedLibrary
         /// <returns></returns>
         public bool PlayCards()
         {
-            // build card object
+            if (playgameBoard[row, column].matchPresent == true) { 
+                if(player == 0)
+                {
+                    playgameBoard[row, column].cardList.Add(player1.cardList[player1.cardList.Count - 1]);
+                    player1.cardList.RemoveAt(player1.cardList.Count - 1);
+                    playgameBoard[row, column].matchPresent = false;                   
+                   
+                }
+                else if (player == 1)
+                {
+                    playgameBoard[row, column].cardList.Add(player1.cardList[player2.cardList.Count - 1]);
+                    player2.cardList.RemoveAt(player2.cardList.Count - 1);
+                    playgameBoard[row, column].matchPresent = false;
+                }
+                setMatchingFlags();
+                return true;
+            }
+            else
+            {
+                return false;
+	    }
+	}
 
-            // Very last thing I do is Reset all Flags
-            setMatchingFlags();
-            return false;
-        }   
         /// <summary>
         /// I Loop through every Card on the game board 
         /// I first compare if my flag is already true 
