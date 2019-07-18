@@ -82,7 +82,7 @@ namespace CaliforniaSpeedLibrary
         {
             int counter = wholeDeck.Length - 8;
             // Pull out the back 8 cards of the deck 
-            for(int i= 0; i <= wholeDeck.Length-8; i++)
+            for(int i= 0; i < wholeDeck.Length-8; i++)
             {
                 // This is where we create the user list of cards. 
                 // divide the rest between two players
@@ -98,22 +98,14 @@ namespace CaliforniaSpeedLibrary
                 }
             }
             // TODO: Fill the "Play" 2d Array with the remaining cards. 
-            foreach (Deck item in playgameBoard)
+            foreach (Deck Cell in playgameBoard)
             {
-                item.cardList.Add(wholeDeck[counter]);
+                Deck boardCell = new Deck();
+                boardCell.cardList.Add(wholeDeck[counter]);
                 counter++;
             }
-            //Console.WriteLine("Player ONes Cards");
-            //foreach (Card item in player1.cardList)
-            //{
-            //    Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
-            //}
-            //Console.WriteLine("");
-            //Console.WriteLine("Player 2's Cards.");
-            //foreach (Card item in player2.cardList)
-            //{
-            //    Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
-            //}
+            setMatchingFlags();
+           
         }
         /// <summary>
         /// This Is called by Init Deck. 
@@ -135,10 +127,10 @@ namespace CaliforniaSpeedLibrary
 
             }// End Loop 
             // Test Displaying the deck 
-            foreach (Card item in wholeDeck)
-            {
-                Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
-            }
+            //foreach (Card item in wholeDeck)
+            //{
+            //    Console.WriteLine("Suit: " + item.Suit + " Face: " + item.Face);
+            //}
            DistributeCards();
         }
 
@@ -148,11 +140,48 @@ namespace CaliforniaSpeedLibrary
         /// <param name="player"></param>
         /// <param name="card"></param>
         /// <returns></returns>
-        public bool PlayCards(int player, int row, int column)
+        public bool PlayCards()
         {
             // build card object
 
+            // Very last thing I do is Reset all Flags
+            setMatchingFlags();
             return false;
+        }   
+        /// <summary>
+        /// I Loop through every Card on the game board 
+        /// I first compare if my flag is already true 
+        /// If not then I check to see if I am comparing against the same card. 
+        /// If Not then I look for a matching Face. 
+        /// </summary>
+        private void setMatchingFlags()
+        {
+            // Loop Through the board setting flags
+            foreach (Deck Cell in playgameBoard)
+            {
+                //Checking if Card was matched already.
+                if (!Cell.matchPresent)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            if (Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
+                                Cell.cardList[Cell.cardList.Count - 1].Suit != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Suit)
+                            {
+                                // Then They are Not the same Card.
+                                if (Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
+                                {
+                                    playgameBoard[i, j].matchPresent = true;
+                                }
+                                else
+                                    playgameBoard[i, j].matchPresent = false;
+                            }
+
+                        }// End Inner
+                    }// End Outer
+                }// End If 
+            }// End For Each
         }
 
 
