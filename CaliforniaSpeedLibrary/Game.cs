@@ -142,7 +142,7 @@ namespace CaliforniaSpeedLibrary
         /// <param name="player"></param>
         /// <param name="card"></param>
         /// <returns></returns>
-        public bool PlayCards()
+        public bool PlayCards(int player, int row, int column)
         {
             if (playgameBoard[row, column].matchPresent == true) { 
                 if(player == 0)
