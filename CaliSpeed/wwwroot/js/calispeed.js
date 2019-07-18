@@ -84,12 +84,12 @@ window.onload = function () {
     PIXI.utils.sayHello(type);
 
     app = new PIXI.Application({
-        width: 100,
-        height: 100,
+        width: window.innerWidth,
+        height: window.innerHeight,
         autoDensity: true,
         resolution: devicePixelRatio
     });
-    console.log(app);
+    
     document.body.appendChild(app.view);
 
     app.renderer.backgroundColor = 0x061639;
@@ -121,7 +121,7 @@ window.onload = function () {
 
         cardback = new PIXI.Sprite(PIXI.Loader.shared.resources["images/card_back_red.png"].texture);
 
-        var ratio = cardback.width / cardback.height;
+        ratio = cardback.width / cardback.height;
         cardback.height = app.screen.height * .25;
         cardback.width = cardback.height * ratio;
         cardback.interactive = true;
@@ -204,6 +204,7 @@ function animate() {
 window.onresize = function (event) {
   //app.renderer.resize(window.innerWidth, window.innerHeight);
   app.resize(window.innerWidth, window.innerHeight);
+  app.renderer.resize(window.innerWidth, window.innerHeight);
   app.renderer.render(app.stage);
   adjustSpritesLocation();
   app.renderer.render(app.stage);
@@ -212,49 +213,55 @@ window.onresize = function (event) {
 
 
 function adjustSpritesLocation() {
+  // Get the real width of the screen
+  var screenWidth = app.renderer.view.style.width;
+  var screenHeight = app.renderer.view.style.height;
 
-    // move text
-    message.x = app.renderer.width / 2;
+  screenWidth = screenWidth.substr(0, screenWidth.length - 2);
+  screenHeight = screenHeight.substr(0, screenHeight.length - 2);
 
+  console.log('Adjust sprites location', screenWidth / 2);
+  message.x = screenWidth / 2;
+  message.style.fontSize = screenHeight / 13;
 
-
-  // move play field
   for (let i = 0; i < cardSprites.length; i++) {
     let row = Math.floor(i / 4);
     let column = i % 4;
     let sprite = cardSprites[i];
     let cardRatio = 1.452; //calculated from sprite.height / sprite.width;
     //console.log(cardRatio);
-    //console.log('sprite width:', sprite.width, 'screen width:', app.renderer.width);
-    sprite.width = app.renderer.width * .2;
+    sprite.width = screenWidth * .2;
     sprite.height = sprite.width * cardRatio;
     if (sprite.width > 200) {
-      //console.log('max width override');
+      console.log('max width override');
       sprite.width = 200;
       sprite.height = sprite.width * cardRatio;
     }
-    if (sprite.height > app.renderer.height / 2.75) {
-      //console.log('height override');
-      sprite.height = app.renderer.height / 3;
+    if (sprite.height > screenHeight / 3.4) {
+      console.log('height override');
+      sprite.height = screenHeight / 3.5;
       sprite.width = sprite.height / cardRatio;
     }
+    // how do I get the styled width???
+    console.log('sprite width:', sprite.width, 'screen width:', screenWidth);
+    console.log('sprite height:', sprite.height, 'screen height:', screenHeight);
     
     //console.log(sprite);
-    sprite.position.set((column - 2) * sprite.width * 1.1 + app.renderer.width * .5 + sprite.width / 2,
-      row * sprite.height * 1.1 + app.renderer.height * .24);
+    sprite.position.set((column - 2) * sprite.width * 1.1 + screenWidth * .5 + sprite.width / 2,
+      row * sprite.height * 1.1 + screenHeight * .24);
     //console.log('row:', row, 'column:', column, 'position', sprite.position);
   }
 
   if (cardSprites.length > 0) {
     cardback.width = cardSprites[0].width;
     cardback.height = cardSprites[0].height;
-    resetCardBackLocation();
+    resetCardBackLocation(screenWidth, screenHeight);
   }
 }
 
-function resetCardBackLocation() {
-    cardback.x = app.renderer.width * .5;
-    cardback.y = app.renderer.height - cardback.height * .25;
+function resetCardBackLocation(screenWidth, screenHeight) {
+    cardback.x = screenWidth * .5;
+    cardback.y = screenHeight - cardback.height * .4;
 }
 
 function onDragStart(event) {
@@ -277,8 +284,6 @@ function onDragEnd() {
             let col = i % 4;
             sendPlay(row, col);
         }
-
-
         // set the interaction data to null
         this.data = null;
     }
