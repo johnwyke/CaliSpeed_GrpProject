@@ -34,7 +34,7 @@ namespace CaliforniaSpeedLibrary
                 }
             }
             init_Deck();
-        }// ConStructor
+        }// Constructor
 
 
         public enum Suit
@@ -76,8 +76,35 @@ namespace CaliforniaSpeedLibrary
             {
                cardList.Clear();
                matchPresent = false;
+
+                
             }
-            
+
+            Card getLastCard()
+            {
+                if (cardList.Count > 0)
+                {
+                    return cardList[cardList.Count - 1];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            public override string ToString()
+            {
+                Card card = getLastCard();
+                if (card != null)
+                {
+                    return $"face {card.Face} suit {card.Suit}";
+                }
+                else
+                {
+                    return "Bad deck";
+                }
+            }
+
         }
 
     
@@ -116,7 +143,6 @@ namespace CaliforniaSpeedLibrary
                     counter++;
                 }
             {
-
             }
             // 90190719 -- Broken. It was never setting deck in the play game board array. 
             //foreach (Deck Cell in playgameBoard)
@@ -246,7 +272,7 @@ namespace CaliforniaSpeedLibrary
         /// <param name="player"></param>
         /// <param name="card"></param>
         /// <returns></returns>
-        public bool PlayCards(int player, int row, int column)
+        public async Task<bool> PlayCards(int player, int row, int column)
         {
             if (playgameBoard[row, column].matchPresent == true) { 
                 if(player == 0)
@@ -258,11 +284,13 @@ namespace CaliforniaSpeedLibrary
                 }
                 else if (player == 1)
                 {
-                    playgameBoard[row, column].cardList.Add(player1.cardList[player2.cardList.Count - 1]);
+                    playgameBoard[row, column].cardList.Add(player2.cardList[player2.cardList.Count - 1]);
                     player2.cardList.RemoveAt(player2.cardList.Count - 1);
                     playgameBoard[row, column].matchPresent = false;
                 }
                 setMatchingFlags();
+                var list = playgameBoard[row, column].cardList;
+                await NewCardPlayedEvent(player, row, column, list[list.Count - 1]);
                 return true;
             }
             else
@@ -289,19 +317,10 @@ namespace CaliforniaSpeedLibrary
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (Cell.cardList.Count > 0 && 
-                                Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
-                                Cell.cardList[Cell.cardList.Count - 1].Suit != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Suit)
+                            if (Cell.cardList.Count > 0 &&
+                                Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
                             {
-                                // Then They are Not the same Card.
-                                if (Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
-                                {
-                                    playgameBoard[i, j].matchPresent = true;
-                                }
-                                else
-                                {
-                                    playgameBoard[i, j].matchPresent = false;
-                                }
+                                playgameBoard[i, j].matchPresent = true;
                             }
 
                         }// End Inner
@@ -311,10 +330,24 @@ namespace CaliforniaSpeedLibrary
         }
 
 
+        public Card[,] getAsCards()
+        {
+            Card[,] cards = new Card[2, 4];
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    var cardsList = playgameBoard[i, j].cardList;
+                    cards[i, j] = cardsList[cardsList.Count - 1];
+                }
+            }
+            return cards;
+        }
+
         /// <summary>
         /// clear board and start again
         /// </summary>
-        public void ClearBoard()
+        public async Task ClearBoard()
         {
             foreach (Deck boardSell in playgameBoard)
             {
@@ -323,8 +356,12 @@ namespace CaliforniaSpeedLibrary
             
             player1.cardList.Clear();
             player2.cardList.Clear();
+
+            
             ShuffleDeck();
 
+            var cards = getAsCards();
+            await NewBoardEvent(cards);
         }
 
         public void CheckWinner()

@@ -22,7 +22,7 @@ namespace CaliSpeed.SignalRHubs
         {
             var game = GetGame();
             // verify our play works
-            if (game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
+            if (await game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
                 Console.WriteLine("Received play result success");
@@ -42,7 +42,7 @@ namespace CaliSpeed.SignalRHubs
         public async Task GetCardsList()
         {
             var game = GetGame();
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.playgameBoard);
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.getAsCards());
         }
 
 
