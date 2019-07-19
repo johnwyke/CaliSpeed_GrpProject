@@ -92,7 +92,7 @@ window.onload = function () {
     
     document.body.appendChild(app.view);
 
-    app.renderer.backgroundColor = 0x061639;
+  app.renderer.backgroundColor = 0x076324;
 
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
@@ -107,7 +107,7 @@ window.onload = function () {
 
     // Cache the sprites for each card
 
-    PIXI.loader.add("images/card_back_red.png");
+    PIXI.Loader.shared.add("images/card_back_red.png");
     // OPTIONAL: Use a sprite map instead of individual textures for the cards
 
     cards.forEach(card => {
@@ -220,7 +220,7 @@ function adjustSpritesLocation() {
   screenWidth = screenWidth.substr(0, screenWidth.length - 2);
   screenHeight = screenHeight.substr(0, screenHeight.length - 2);
 
-  console.log('Adjust sprites location', screenWidth / 2);
+  //console.log('Adjust sprites location', screenWidth / 2);
   message.x = screenWidth / 2;
   message.style.fontSize = screenHeight / 13;
 
@@ -233,18 +233,18 @@ function adjustSpritesLocation() {
     sprite.width = screenWidth * .2;
     sprite.height = sprite.width * cardRatio;
     if (sprite.width > 200) {
-      console.log('max width override');
+      //console.log('max width override');
       sprite.width = 200;
       sprite.height = sprite.width * cardRatio;
     }
     if (sprite.height > screenHeight / 3.4) {
-      console.log('height override');
+      //console.log('height override');
       sprite.height = screenHeight / 3.5;
       sprite.width = sprite.height / cardRatio;
     }
     // how do I get the styled width???
-    console.log('sprite width:', sprite.width, 'screen width:', screenWidth);
-    console.log('sprite height:', sprite.height, 'screen height:', screenHeight);
+    //console.log('sprite width:', sprite.width, 'screen width:', screenWidth);
+    //console.log('sprite height:', sprite.height, 'screen height:', screenHeight);
     
     //console.log(sprite);
     sprite.position.set((column - 2) * sprite.width * 1.1 + screenWidth * .5 + sprite.width / 2,
@@ -289,19 +289,26 @@ function onDragEnd() {
     }
 }
 
+// Checks to see if the dragged card is over any of the sprites.
+// If so, it will highlight it as red
+function doCardHighlighting() {
+  for (let sprite of cardSprites) {
+    if (isSelectionCardHovering(sprite)) {
+      sprite.tint = 0x990000;
+    } else {
+      sprite.tint = 0xFFFFFF;
+    }
+  }
+}
+
+// Called whenver the card is moved
 function onDragMove() {
     if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.position.x = newPosition.x;
         this.position.y = newPosition.y;
 
-        for (let sprite of cardSprites) {
-            if (isSelectionCardHovering(sprite)) {
-                sprite.tint = 0x990000;
-            } else {
-                sprite.tint = 0xFFFFFF;
-            }
-        }
+      doCardHighlighting();
     }
 }
 
@@ -347,33 +354,33 @@ function getCardsList() {
 
 // Once GameHub responds...
 connection.on
-    (
-        "ReceiveCardsList",
-        function (cardsList) {
-            console.log(cardsList); //displays JS object cardsList
+  (
+    "ReceiveCardsList",
+    function (cardsList) {
+      console.log(cardsList); //displays JS object cardsList
 
-            if (cardsList) {
-                console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
-                
-            }
-            else {
-                console.log("No cardsList received.");
-            }
-        }
-    )
+      if (cardsList) {
+        console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
+
+      }
+      else {
+        console.log("No cardsList received.");
+      }
+    }
+  );
 
 // Once Game.cs tells client to update cardsList...
 
 connection.on
-    (
-        "Update_AllCards",
-        function (cards) {
-            console.log(cards); //displays JS object cards
+  (
+    "Update_AllCards",
+    function (cards) {
+      console.log(cards); //displays JS object cards
 
-            //update a ton of stuff
-            console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
-        }
-    )
+      //update a ton of stuff
+      console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
+    }
+  );
 
 
 /**** SEND PLAY, RECEIVE PLAY RESULT, and UPDATE CARD ****
@@ -392,38 +399,44 @@ function sendPlay(row, column)
 
 // Once GameHub responds...
 connection.on
-(
+  (
     "ReceivePlayResult",
     function (result) {
 
-        //console.log("Play Result: ");
+      console.log("Play Result: ",result);
 
-        if (result)
-        {
-            //do whatever we want here
+      if (result) {
+        //do whatever we want here
 
-            //console.log("Success");
-        }
-        else
-        {
-            //play 'fail' notification
+        //console.log("Success");
+        
+      }
+      else {
+        //play 'fail' notification
 
-            //console.log("Fail");
-        }
+        //console.log("Fail");
+        
+
+      }
+      adjustSpritesLocation();
+      doCardHighlighting();
     }
-)
+  )
 
 // Once Game.cs tells client to update display of new card
 connection.on
-    (
-        "Update_NewCard",
-        function (newCard) {
-            console.log(newCard); //displays string cards
-
-            //update a ton of stuff
-            console.log("UPDATE NOW TO SHOW NEW CARD");
-        }
-    )
+  (
+    "Update_NewCard",
+    function (row, column, newCard) {
+      console.log('Update_NewCard:', newCard); //displays string cards
+      var image = getCardImage(newCard).image;
+      console.log(image);
+      // Card, Row, Column
+      var newTexture = PIXI.Loader.shared.resources[image].texture;
+      //var newTexture = PIXI.Texture.fromImage(getCardImage(newCard).image);
+      cardSprites[row * 4 + column].texture = newTexture;
+    }
+  )
 
 
 
@@ -436,5 +449,5 @@ connection.on
  */
 
 function getCardImage(gameCard) {
-    return cards[((gameCard.face) * 4 + gameCard.suit)];
+    return cards[gameCard.face * 4 + gameCard.suit];
 }

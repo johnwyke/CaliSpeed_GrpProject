@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using CaliSpeed.SignalRHubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CaliSpeed
 {
@@ -24,6 +25,7 @@ namespace CaliSpeed
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseStaticFiles();
+            app.UseWebSockets();
 
             if (env.IsDevelopment())
             {
@@ -38,6 +40,16 @@ namespace CaliSpeed
                     routes.MapHub<GameHub>("/GameHub");
                 }
             );
+
+            // Get a hub context to use later to send from outside of a hub
+            app.Use(async (context, next) =>
+            {
+                var hubContext = context.RequestServices.GetRequiredService<IHubContext<GameHub>>();
+                Rooms.RoomFactory.setup(hubContext);
+
+                await next.Invoke();
+
+            });
 
             app.UseMvc();
 

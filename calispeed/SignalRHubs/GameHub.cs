@@ -1,32 +1,15 @@
 ﻿using CaliforniaSpeedLibrary;
+using CaliSpeed.Rooms;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace CaliSpeed.SignalRHubs
 {
     public class GameHub : Hub
     {
-        /// <summary>
-        ///  Container class that encapsulates all data that the client needs for a new play
-        /// </summary>
-        public class CardPlay
-        {
-            /// <summary>
-            /// Incoming card
-            /// </summary>
-            public Game.Card Card;
-            /// <summary>
-            /// Row that the play takes place at
-            /// </summary>
-            public int Row;
-            /// <summary>
-            /// Column that the play takes place at
-            /// </summary>
-            public int Column;
-        }
-
-        private static Game game;
+        private static Room room;
 
         /// <summary>
         /// Allows a client to request that their card be played.
@@ -38,13 +21,17 @@ namespace CaliSpeed.SignalRHubs
         public async Task PlayCard(int row, int column)
         {
             var game = GetGame();
-            if (/*if card state is playable*/game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
+            // verify our play works
+            if (await game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
+                Console.WriteLine("Received play result success");
+                // DEBUG play card
             }
             else
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", false);
+                Console.WriteLine("Received play result fail");
             }
         }
 
@@ -64,45 +51,11 @@ namespace CaliSpeed.SignalRHubs
 
         private Game GetGame()
         {
-            if (game == null)
+            if (room == null)
             {
-                game = new Game();
-                // Bind events to Game events
-                // See CaliforniaSpeedLibrary::Game.cs to see further documentation
-                game.NewBoardEvent += Game_NewBoardEvent;
-                game.NewCardPlayedEvent += Game_NewCardPlayedEvent;
+                room = RoomFactory.createRoom();
             }
-            return game;
-        }
-
-        /// <summary>
-        /// Callback function that allows
-        /// (Kameron): "Signifies that all cards have changed"--I believe
-        /// this means that Game.cs is trying to tell calispeed.js
-        /// that a new game has started and that it needs to update
-        /// everything visually. But when does Game.cs do this? I don't see
-        /// any code where it happens yet.
-        /// </summary>
-        /// <param name="cards">2x4 array containing the cards</param>
-        /// <returns></returns>
-        private async Task Game_NewBoardEvent(Game.Card[,] cards)
-        {
-            await Clients.All.SendAsync("Update_AllCards", cards);
-        }
-        /// <summary>
-        /// (Kameron): Ran when Game.cs tells calispeed.js that a new
-        /// card has been played on the board. But when does Game.cs do this? I don't see any code where it happens yet.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <param name="card"></param>
-        /// <returns></returns>
-        private async Task Game_NewCardPlayedEvent(int player, int row, int column, Game.Card card)
-        {
-            CardPlay play = new CardPlay() { Card = card, Column = column, Row = row };
-            await Clients.All.SendAsync("Update_NewCard", play);
-
+            return room.GameInstance;
         }
     }
 }
