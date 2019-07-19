@@ -26,6 +26,13 @@ namespace CaliforniaSpeedLibrary
 
         public Game()
         {
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    playgameBoard[i,j] = new Deck();
+                }
+            }
             init_Deck();
         }// ConStructor
 
@@ -185,7 +192,8 @@ namespace CaliforniaSpeedLibrary
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
+                            if (Cell.cardList.Count > 0 && 
+                                Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
                                 Cell.cardList[Cell.cardList.Count - 1].Suit != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Suit)
                             {
                                 // Then They are Not the same Card.
@@ -194,7 +202,9 @@ namespace CaliforniaSpeedLibrary
                                     playgameBoard[i, j].matchPresent = true;
                                 }
                                 else
+                                {
                                     playgameBoard[i, j].matchPresent = false;
+                                }
                             }
 
                         }// End Inner

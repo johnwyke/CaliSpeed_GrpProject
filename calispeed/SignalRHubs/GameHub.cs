@@ -22,7 +22,7 @@ namespace CaliSpeed.SignalRHubs
         {
             var game = GetGame();
             // verify our play works
-            if (await game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
+            if (game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
                 Console.WriteLine("Received play result success");
@@ -36,16 +36,13 @@ namespace CaliSpeed.SignalRHubs
         }
 
         /// <summary>
-        /// The client has asked for all cards to be received, send them.
-        /// (Kameron): 'All Cards', as in the whole deck? Or the face up
-        /// cards on the board? Or should I be sending all 4 variables
-        /// at the same time (play, player1, player2, Deck)?
+        /// The client has asked for all cards in the play field to be received, send them
         /// </summary>
         /// <returns></returns>
         public async Task GetCardsList()
         {
             var game = GetGame();
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.Deck);
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.playgameBoard);
         }
 
 

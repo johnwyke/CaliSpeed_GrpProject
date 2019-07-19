@@ -170,7 +170,7 @@ window.onload = function () {
                     sprite.anchor.set(0.5);
                     cardSprites.push(sprite);
                 } else {
-                    console.log("Card was undefined :(");
+                    console.error("Card was undefined :(");
                 }
             }
         }
@@ -220,7 +220,6 @@ function adjustSpritesLocation() {
   screenWidth = screenWidth.substr(0, screenWidth.length - 2);
   screenHeight = screenHeight.substr(0, screenHeight.length - 2);
 
-  //console.log('Adjust sprites location', screenWidth / 2);
   message.x = screenWidth / 2;
   message.style.fontSize = screenHeight / 13;
 
@@ -228,28 +227,20 @@ function adjustSpritesLocation() {
     let row = Math.floor(i / 4);
     let column = i % 4;
     let sprite = cardSprites[i];
-    let cardRatio = 1.452; //calculated from sprite.height / sprite.width;
-    //console.log(cardRatio);
+    let cardRatio = 1.452; //calculated from sprite.height / sprite.width
     sprite.width = screenWidth * .2;
     sprite.height = sprite.width * cardRatio;
     if (sprite.width > 200) {
-      //console.log('max width override');
       sprite.width = 200;
       sprite.height = sprite.width * cardRatio;
     }
     if (sprite.height > screenHeight / 3.4) {
-      //console.log('height override');
       sprite.height = screenHeight / 3.5;
       sprite.width = sprite.height / cardRatio;
     }
-    // how do I get the styled width???
-    //console.log('sprite width:', sprite.width, 'screen width:', screenWidth);
-    //console.log('sprite height:', sprite.height, 'screen height:', screenHeight);
     
-    //console.log(sprite);
     sprite.position.set((column - 2) * sprite.width * 1.1 + screenWidth * .5 + sprite.width / 2,
       row * sprite.height * 1.1 + screenHeight * .24);
-    //console.log('row:', row, 'column:', column, 'position', sprite.position);
   }
 
   if (cardSprites.length > 0) {
@@ -331,7 +322,6 @@ connection.start().then
 (
     function ()
     {
-        //console.log("Connection started");
         getCardsList();
     }
 );
@@ -351,6 +341,12 @@ connection.start().then
 function getCardsList() {
     connection.invoke("GetCardsList");
 }
+
+
+// Note from Aaron: 
+// Kameron, I think ReceiveCardsList and Update_AllCards are identical - 
+// both should receive the cards that are in the play field- make them both
+// ReceiveCardsList. The Events now live in the Room due to a technical limitation
 
 // Once GameHub responds...
 connection.on
@@ -403,40 +399,29 @@ connection.on
     "ReceivePlayResult",
     function (result) {
 
-      console.log("Play Result: ",result);
+      console.log("Received Play Result with status", result);
 
       if (result) {
-        //do whatever we want here
-
-        //console.log("Success");
-        
+        // TODO indicate a success somehow
       }
       else {
-        //play 'fail' notification
-
-        //console.log("Fail");
-        
-
+        // TODO indicate a failure somehow
       }
       adjustSpritesLocation();
       doCardHighlighting();
     }
-  )
+  );
 
 // Once Game.cs tells client to update display of new card
 connection.on
   (
     "Update_NewCard",
     function (row, column, newCard) {
-      console.log('Update_NewCard:', newCard); //displays string cards
       var image = getCardImage(newCard).image;
-      console.log(image);
-      // Card, Row, Column
       var newTexture = PIXI.Loader.shared.resources[image].texture;
-      //var newTexture = PIXI.Texture.fromImage(getCardImage(newCard).image);
       cardSprites[row * 4 + column].texture = newTexture;
     }
-  )
+  );
 
 
 
