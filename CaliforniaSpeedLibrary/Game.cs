@@ -107,12 +107,25 @@ namespace CaliforniaSpeedLibrary
                 }
             }
             //  Fill the "Play" 2d Array with the remaining cards. 
-            foreach (Deck Cell in playgameBoard)
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 4; j++)
+                {
+                    Deck boardCell = new Deck();
+                    boardCell.cardList.Add(wholeDeck[counter]);
+                    playgameBoard[i, j] = boardCell;
+                    counter++;
+                }
             {
-                Deck boardCell = new Deck();
-                boardCell.cardList.Add(wholeDeck[counter]);
-                counter++;
+
             }
+            // 90190719 -- Broken. It was never setting deck in the play game board array. 
+            //foreach (Deck Cell in playgameBoard)
+            //{
+            //   Deck boardCell = new Deck();
+            //    boardCell.cardList.Add(wholeDeck[counter]);
+            //    playgameBoard[] = boardCell;
+            //    counter++;
+            //}
             setMatchingFlags();
            
         }
@@ -134,7 +147,7 @@ namespace CaliforniaSpeedLibrary
                 wholeDeck[i] = wholeDeck[newNumb];
                 wholeDeck[newNumb] = temp;
 
-            }// End Loop 
+            }// End Loop gi
             // Test Displaying the deck 
             //foreach (Card item in wholeDeck)
             //{
