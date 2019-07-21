@@ -130,6 +130,38 @@ namespace CaliforniaSpeedLibrary
            
         }
         /// <summary>
+        /// Handles the card distibution of each player for one row. 
+        /// Takes place after Stale mate and each player has added the four decks in from of them. 
+        /// </summary>
+        public void reDistributeCards()
+        {
+            // Pull out the back 8 cards of the deck 
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if(i == 0)
+                    {
+                        // Player Ones side                       
+                        playgameBoard[i, j].cardList.Clear();
+                        playgameBoard[i, j].cardList.Add(player1.cardList[player1.cardList.Count - 1]);
+                        player1.cardList.RemoveAt(player1.cardList.Count - 1);
+
+                    }else if (i == 1){
+                        // Handles Players 2 cards
+                        playgameBoard[i, j].cardList.Clear();
+                        playgameBoard[i, j].cardList.Add(player2.cardList[player1.cardList.Count - 1]);
+                        player2.cardList.RemoveAt(player2.cardList.Count - 1);
+                    }
+                   
+                }
+
+            }
+            setMatchingFlags();
+
+        }
+        /// <summary>
         /// This Is called by Init Deck. 
         /// Shuffle the deck of cards and test the output. 
         /// </summary>
@@ -155,6 +187,58 @@ namespace CaliforniaSpeedLibrary
             //}
            DistributeCards();
         }
+        /// <summary>
+        /// Called After Stalemate is found. Shuffle All Cards in Players Deck. 
+        /// /// </summary>
+        private void ShuffleDeck(Deck player)
+        {
+            Random rand = new Random();
+            int newNumb = 0;
+            Card temp;
+            // Build the Deck of Cards make sure that the cards are not duplicated
+            // Shuffle the cards. 
+            for (int i = player.cardList.Count- 1; i >= 0; i--)
+            {
+                newNumb = rand.Next(i);
+                temp = player.cardList[i];
+                player.cardList[i] = player.cardList[newNumb];
+                player.cardList[newNumb] = temp;
+
+            }// End Loop 
+             
+        }
+        /// <summary>
+        /// Adds all the card to players card stack. 
+        /// </summary>
+        private void gatherCards()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i == 0)
+                    {
+                        // Player Ones side  
+                        foreach (Card cellCard in playgameBoard[i,j].cardList)
+                        {
+                            player1.cardList.Add(cellCard);
+                        }
+                                               
+                    }
+                    else if (i == 1)
+                    {
+                        // Handles Players 2 cards
+                        foreach (Card cellCard in playgameBoard[i, j].cardList)
+                        {
+                            player2.cardList.Add(cellCard);
+                        }
+                    }
+
+                }
+
+            }
+        }
+
 
         /// <summary>
         /// play game 
@@ -252,7 +336,9 @@ namespace CaliforniaSpeedLibrary
 
         }
 
-        //
+        /// <summary>
+        /// BUilds deck of cards. 
+        /// </summary>
         private void init_Deck()
         {
             int counter = 0;
@@ -276,7 +362,36 @@ namespace CaliforniaSpeedLibrary
 
         }
 
+        /// <summary>
+        /// Check for stalemate. if stalemate found then combine cards and reshuffle and redistribute. 
+        /// </summary>
+        private void stalemate()
+        {
+            bool inStalemate = true;
+            // Loop Through the board setting flags
+            foreach (Deck Cell in playgameBoard)
+            {
+                if (!Cell.matchPresent)
+                {
+                    inStalemate = true;
+                }else if (Cell.matchPresent)
+                {
+                    inStalemate = false;
+                    break;
+                }
+                
+            }// End For Each
 
+            // If match Found is still False add All Cards and resuffle. 
+            if (inStalemate)
+            {
+                gatherCards();
+                ShuffleDeck(player1);
+                ShuffleDeck(player2);
+                reDistributeCards();
+            }
+            
+        }
 
     }
 
