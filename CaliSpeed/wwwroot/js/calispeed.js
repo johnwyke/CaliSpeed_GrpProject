@@ -423,6 +423,15 @@ connection.on
     }
   );
 
+connection.on
+  (
+    "PlayerWon",
+    function (winMessage) {
+      let txt = new PIXI.Text(winMessage, { fontSize: 20, stroke: 1 });
+      txt.anchor.set(.5, 0);
+      app.stage.add(txt);
+    }
+  );
 
 
 

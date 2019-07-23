@@ -18,6 +18,12 @@ namespace CaliforniaSpeedLibrary
         /// </summary>
         public event NewBoardDelegate NewBoardEvent;
 
+        public delegate Task NewWinnerDelegate(string winMessage);
+        /// <summary>
+        /// Called when a new winner is added
+        /// </summary>
+        public event NewWinnerDelegate NewWinnerEvent;
+
 
         public Deck[,] playgameBoard = new Deck[2, 4];
         public Deck player1 = new Deck();

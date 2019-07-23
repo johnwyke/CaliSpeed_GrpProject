@@ -24,27 +24,31 @@ namespace CaliSpeed.Rooms
             GameInstance = new Game();
             GameInstance.NewBoardEvent += Game_NewBoardEvent;
             GameInstance.NewCardPlayedEvent += Game_NewCardPlayedEvent;
+            GameInstance.NewWinnerEvent += GameInstance_NewWinnerEvent;
             _hubContext = hubContext;
         }
 
         /// <summary>
-        /// Callback function that allows
-        /// (Kameron): "Signifies that all cards have changed"--I believe
-        /// this means that Game.cs is trying to tell calispeed.js
-        /// that a new game has started and that it needs to update
-        /// everything visually. But when does Game.cs do this? I don't see
-        /// any code where it happens yet.
+        /// Called when a new winner is added
+        /// </summary>
+        /// <param name="winMessage"></param>
+        /// <returns></returns>
+        private async Task GameInstance_NewWinnerEvent(string winMessage)
+        {
+            await _hubContext.Clients.All.SendAsync("NewWinner", winMessage);
+        }
+
+        /// <summary>
+        /// Callback function that is called when all cards on the play field should be updated
         /// </summary>
         /// <param name="cards">2x4 array containing the cards</param>
         /// <returns></returns>
         private async Task Game_NewBoardEvent(Game.Card[,] cards)
         {
-            
             await _hubContext.Clients.All.SendAsync("Update_AllCards", cards);
         }
         /// <summary>
-        /// (Kameron): Ran when Game.cs tells calispeed.js that a new
-        /// card has been played on the board. But when does Game.cs do this? I don't see any code where it happens yet.
+        /// Called when a new card is played by a player
         /// </summary>
         /// <param name="player"></param>
         /// <param name="row"></param>
