@@ -336,10 +336,14 @@ namespace CaliforniaSpeedLibrary
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (Cell.cardList.Count > 0 &&
-                                Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
+                            if (Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
+                                Cell.cardList[Cell.cardList.Count - 1].Suit != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Suit)
                             {
-                                playgameBoard[i, j].matchPresent = true;
+                                if (Cell.cardList.Count > 0 &&
+                                    Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
+                                {
+                                    playgameBoard[i, j].matchPresent = true;
+                                }
                             }
 
                         }// End Inner
@@ -383,12 +387,23 @@ namespace CaliforniaSpeedLibrary
             await NewBoardEvent(cards);
         }
 
-        public void CheckWinner()
+        public String CheckWinner()
         {
-             /* player cover cards
-             * no matches state
-             * player wins/lose        
-             */
+            /* player cover cards
+            * no matches state
+            * player wins/lose        
+            */
+            string playerWin = null;
+
+            if (player1.cardList.Count == 0)
+            {
+                playerWin = "player1 won the game";
+            }
+            else if (player2.cardList.Count == 0)
+            {
+                playerWin = "player2 won the game";
+            }
+            return playerWin;
 
         }
 
