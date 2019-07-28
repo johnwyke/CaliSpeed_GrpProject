@@ -28,8 +28,8 @@ namespace CaliforniaSpeedLibrary
         public Deck[,] playgameBoard = new Deck[2, 4];
         public Deck player1 = new Deck();
         public Deck player2 = new Deck();
-        public int player1Id = 0;
-        public int player2Id = 0;
+        public string player1Id = null;
+        public string player2Id = null;
         public Card [] wholeDeck = new Card[52];
 
         public Game()
@@ -88,7 +88,7 @@ namespace CaliforniaSpeedLibrary
                 
             }
 
-            Card getLastCard()
+            public Card getLastCard()
             {
                 if (cardList.Count > 0)
                 {
@@ -159,7 +159,7 @@ namespace CaliforniaSpeedLibrary
         /// Handles the card distribution of each player for one row. 
         /// Takes place after Stale mate and each player has added the four decks in from of them. 
         /// </summary>
-        public void reDistributeCards()
+        public async void reDistributeCards()
         {
             // Pull out the back 8 cards of the deck 
 
@@ -184,6 +184,7 @@ namespace CaliforniaSpeedLibrary
                 }
 
             }
+            await NewBoardEvent(getAsCards());
             setMatchingFlags();
 
         }
@@ -269,18 +270,24 @@ namespace CaliforniaSpeedLibrary
         /// <summary>
         /// play game 
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="connectionId"></param>
         /// <param name="card"></param>
         /// <returns></returns>
-        public async Task<bool> PlayCards(int player, int row, int column)
+        public async Task<bool> PlayCards(string connectionId, int row, int column)
         {
-            if (player1Id == 0)
+            int player = -1;
+            if (player1Id == connectionId)
             {
-                //set player1Id to connectionId;
+                player = 0;
             }
-            else if (player2Id == 0)
+            else if (player2Id == connectionId)
             {
-                //set player2Id to connectionId;
+                player = 1;
+            }
+            else
+            {
+                Console.WriteLine("Error, Failed to find connection ID for player");
+                return false;
             }
 
             if (playgameBoard[row, column].matchPresent == true) { 
@@ -289,7 +296,7 @@ namespace CaliforniaSpeedLibrary
                 {
                     playgameBoard[row, column].cardList.Add(player1.cardList[player1.cardList.Count - 1]);
                     player1.cardList.RemoveAt(player1.cardList.Count - 1);
-                    playgameBoard[row, column].matchPresent = false;                   
+                    playgameBoard[row, column].matchPresent = false;
                    
                 }
                 //if(connectionId == player2Id)
@@ -299,16 +306,22 @@ namespace CaliforniaSpeedLibrary
                     player2.cardList.RemoveAt(player2.cardList.Count - 1);
                     playgameBoard[row, column].matchPresent = false;
                 }
+                if (CheckWinner())
+                {
+                    await ClearBoard();
+                }
                 setMatchingFlags();
+                stalemate();
                 var list = playgameBoard[row, column].cardList;
                 await NewCardPlayedEvent(player, row, column, list[list.Count - 1]);
+                printDebug();
                 return true;
             }
             else
             {
                 return false;
+	        }
 	    }
-	}
 
         /// <summary>
         /// I Loop through every Card on the game board 
@@ -329,13 +342,22 @@ namespace CaliforniaSpeedLibrary
                         for (int j = 0; j < 4; j++)
                         {
                             var compCell = playgameBoard[i, j];
-                            if (!Object.ReferenceEquals(compCell, Cell) && Cell.cardList.Count > 0 && compCell.cardList.Count > 0)
+                            if (!object.ReferenceEquals(compCell, Cell))
                             {
-                                var currCard = Cell.cardList[Cell.cardList.Count - 1];
-                                var compCard = compCell.cardList[Cell.cardList.Count - 1];
-                                if (currCard.Face == compCard.Face)
+                                var currCard = Cell.getLastCard();
+                                var compCard = compCell.getLastCard();
+                                if (currCard != null && compCell != null)
                                 {
-                                    playgameBoard[i, j].matchPresent = true;
+                                    if (currCard.Face == compCard.Face)
+                                    {
+                                        Cell.matchPresent = true;
+                                        playgameBoard[i, j].matchPresent = true;
+                                        Console.WriteLine($"Match i: {i} j: {j}");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("ERROR: Card list was empty");
                                 }
                             }
                         }// End Inner
@@ -450,12 +472,48 @@ namespace CaliforniaSpeedLibrary
             // If match Found is still False add All Cards and resuffle. 
             if (inStalemate)
             {
+                Console.WriteLine("Stalemate encountered, redistributing cards");
                 gatherCards();
                 ShuffleDeck(player1);
                 ShuffleDeck(player2);
                 reDistributeCards();
             }
             
+        }
+
+        /// <summary>
+        /// Attempts to join the game
+        /// </summary>
+        /// <param name="connectionId">Connection ID of the incoming player</param>
+        /// <returns>True if the player successfully joined the game</returns>
+        public bool JoinGame(String connectionId)
+        {
+            bool success = false;
+            if (player1Id == null)
+            {
+                player1Id = connectionId;
+                success = true;
+            }
+            else if (player2Id == null)
+            {
+                player2Id = connectionId;
+                success = true;
+            }
+
+            return success;
+        }
+
+        private void printDebug()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    var cell = playgameBoard[i, j];
+                    var card = cell.cardList[cell.cardList.Count - 1];
+                    Console.WriteLine($"i: {i} j: {j} Top card: {card.Face}, has match: {cell.matchPresent}");
+                }
+            }
         }
 
     }
