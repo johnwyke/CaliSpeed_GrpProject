@@ -22,6 +22,9 @@ namespace CaliSpeed.SignalRHubs
         {
             var game = GetGame();
             // verify our play works
+
+            Console.WriteLine(Context.ConnectionId.GetHashCode());
+
             if (await game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
@@ -50,7 +53,7 @@ namespace CaliSpeed.SignalRHubs
         {
             if (room == null)
             {
-                room = RoomFactory.createRoom();
+                room = RoomFactory.createRoom(Context.ConnectionId.GetHashCode());
             }
             return room.GameInstance;
         }

@@ -356,8 +356,15 @@ connection.on
       console.log(cardsList); //displays JS object cardsList
 
       if (cardsList) {
-        console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
-
+          console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
+          for (i = 0; i < 2; i++) {
+              for (j = 0; j < 4; j++) {
+                  var image = getCardImage(cardsList[i][j]).image;
+                  var newTexture = PIXI.Loader.shared.resources[image].texture;
+                  cardSprites[i * 4 + j].texture = newTexture;
+              }
+          }
+          
       }
       else {
         console.log("No cardsList received.");
@@ -416,10 +423,17 @@ connection.on
 connection.on
   (
     "Update_NewCard",
-    function (row, column, newCard) {
-      var image = getCardImage(newCard).image;
-      var newTexture = PIXI.Loader.shared.resources[image].texture;
-      cardSprites[row * 4 + column].texture = newTexture;
+      function (row, column, matchResult, newCard) {
+          console.log("Match Result: " + matchResult);
+          console.log("New Card: ");
+          console.log(newCard);
+        if (matchResult) {
+            var image = getCardImage(newCard).image;
+            var newTexture = PIXI.Loader.shared.resources[image].texture;
+            cardSprites[row * 4 + column].texture = newTexture;
+        }
+        else {
+        }
     }
   );
 

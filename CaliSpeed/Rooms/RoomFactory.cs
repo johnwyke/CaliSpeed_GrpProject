@@ -20,9 +20,9 @@ namespace CaliSpeed.Rooms
         }
 
         
-        public static Room createRoom()
+        public static Room createRoom(int connectionId)
         {
-            return new Room(_hubContext);
+            return new Room(_hubContext, connectionId);
         }
     }
 }
