@@ -28,6 +28,8 @@ namespace CaliforniaSpeedLibrary
         public Deck[,] playgameBoard = new Deck[2, 4];
         public Deck player1 = new Deck();
         public Deck player2 = new Deck();
+        public int player1Id = 0;
+        public int player2Id = 0;
         public Card [] wholeDeck = new Card[52];
 
         public Game()
@@ -45,10 +47,10 @@ namespace CaliforniaSpeedLibrary
 
         public enum Suit
         {
-            Heart,
+            Club,
             Diamond,
-            Spade,
-            Club
+            Heart,
+            Spade
         }
         public enum Face
         {
@@ -280,7 +282,17 @@ namespace CaliforniaSpeedLibrary
         /// <returns></returns>
         public async Task<bool> PlayCards(int player, int row, int column)
         {
+            if (player1Id == 0)
+            {
+                //set player1Id to connectionId;
+            }
+            else if (player2Id == 0)
+            {
+                //set player2Id to connectionId;
+            }
+
             if (playgameBoard[row, column].matchPresent == true) { 
+                //if(connectionId == player1Id)
                 if(player == 0)
                 {
                     playgameBoard[row, column].cardList.Add(player1.cardList[player1.cardList.Count - 1]);
@@ -288,6 +300,7 @@ namespace CaliforniaSpeedLibrary
                     playgameBoard[row, column].matchPresent = false;                   
                    
                 }
+                //if(connectionId == player2Id)
                 else if (player == 1)
                 {
                     playgameBoard[row, column].cardList.Add(player2.cardList[player2.cardList.Count - 1]);
