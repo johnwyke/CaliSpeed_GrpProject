@@ -143,6 +143,7 @@ namespace CaliforniaSpeedLibrary
             }
             //  Fill the "Play" 2d Array with the remaining cards. 
             for (int i = 0; i < 2; i++)
+            {
                 for (int j = 0; j < 4; j++)
                 {
                     Deck boardCell = new Deck();
@@ -150,21 +151,12 @@ namespace CaliforniaSpeedLibrary
                     playgameBoard[i, j] = boardCell;
                     counter++;
                 }
-            {
             }
-            // 90190719 -- Broken. It was never setting deck in the play game board array. 
-            //foreach (Deck Cell in playgameBoard)
-            //{
-            //   Deck boardCell = new Deck();
-            //    boardCell.cardList.Add(wholeDeck[counter]);
-            //    playgameBoard[] = boardCell;
-            //    counter++;
-            //}
             setMatchingFlags();
            
         }
         /// <summary>
-        /// Handles the card distibution of each player for one row. 
+        /// Handles the card distribution of each player for one row. 
         /// Takes place after Stale mate and each player has added the four decks in from of them. 
         /// </summary>
         public void reDistributeCards()
@@ -181,8 +173,8 @@ namespace CaliforniaSpeedLibrary
                         playgameBoard[i, j].cardList.Clear();
                         playgameBoard[i, j].cardList.Add(player1.cardList[player1.cardList.Count - 1]);
                         player1.cardList.RemoveAt(player1.cardList.Count - 1);
-
-                    }else if (i == 1){
+                    }
+                    else if (i == 1){
                         // Handles Players 2 cards
                         playgameBoard[i, j].cardList.Clear();
                         playgameBoard[i, j].cardList.Add(player2.cardList[player1.cardList.Count - 1]);
@@ -336,16 +328,16 @@ namespace CaliforniaSpeedLibrary
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (Cell.cardList[Cell.cardList.Count - 1].Face != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face &&
-                                Cell.cardList[Cell.cardList.Count - 1].Suit != playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Suit)
+                            var compCell = playgameBoard[i, j];
+                            if (!Object.ReferenceEquals(compCell, Cell) && Cell.cardList.Count > 0 && compCell.cardList.Count > 0)
                             {
-                                if (Cell.cardList.Count > 0 &&
-                                    Cell.cardList[Cell.cardList.Count - 1].Face == playgameBoard[i, j].cardList[playgameBoard[i, j].cardList.Count - 1].Face)
+                                var currCard = Cell.cardList[Cell.cardList.Count - 1];
+                                var compCard = compCell.cardList[Cell.cardList.Count - 1];
+                                if (currCard.Face == compCard.Face)
                                 {
                                     playgameBoard[i, j].matchPresent = true;
                                 }
                             }
-
                         }// End Inner
                     }// End Outer
                 }// End If 
@@ -387,23 +379,25 @@ namespace CaliforniaSpeedLibrary
             await NewBoardEvent(cards);
         }
 
-        public String CheckWinner()
+        public bool CheckWinner()
         {
             /* player cover cards
             * no matches state
             * player wins/lose        
             */
-            string playerWin = null;
+            bool hasWinner = false;
 
             if (player1.cardList.Count == 0)
             {
-                playerWin = "player1 won the game";
+                hasWinner = true;
+                NewWinnerEvent("player1 won the game");
             }
             else if (player2.cardList.Count == 0)
             {
-                playerWin = "player2 won the game";
+                hasWinner = true;
+                NewWinnerEvent("player2 won the game");
             }
-            return playerWin;
+            return hasWinner;
 
         }
 
