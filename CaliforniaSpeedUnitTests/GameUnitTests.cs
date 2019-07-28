@@ -56,6 +56,7 @@ namespace CaliforniaSpeedUnitTests
         public async Task CheckNewCard()
         {
             Game game = new Game();
+            game.player1Id = "Player 1";
             // bind our NewCardPlayedEvent as if we are Room.cs
             game.NewCardPlayedEvent += Game_NewCardPlayedEvent;
 
@@ -66,7 +67,7 @@ namespace CaliforniaSpeedUnitTests
 
             foreach (var match in matches)
             {
-                Assert.IsTrue(await game.PlayCards(0, match.Item1.Item1, match.Item1.Item2));
+                Assert.IsTrue(await game.PlayCards("Player 1", match.Item1.Item1, match.Item1.Item2));
             }
 
             
