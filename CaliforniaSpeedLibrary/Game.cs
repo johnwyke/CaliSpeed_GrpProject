@@ -184,7 +184,10 @@ namespace CaliforniaSpeedLibrary
                 }
 
             }
-            await NewBoardEvent(getAsCards());
+            if (NewBoardEvent != null)
+            {
+                await NewBoardEvent(getAsCards());
+            }
             setMatchingFlags();
 
         }
@@ -398,7 +401,10 @@ namespace CaliforniaSpeedLibrary
             ShuffleDeck();
 
             var cards = getAsCards();
-            await NewBoardEvent(cards);
+            if (NewBoardEvent != null)
+            {
+                await NewBoardEvent(cards);
+            }
         }
 
         public bool CheckWinner()
