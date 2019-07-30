@@ -89,8 +89,14 @@ window.onload = function () {
         autoDensity: true,
         resolution: devicePixelRatio
     });
-    
-    document.body.appendChild(app.view);
+  var button = document.createElement("button");
+  button.innerHTML = "Reset Game";
+  button.addEventListener("click", function () {
+    connection.invoke("ResetGame");
+  });
+  var chatbox = document.getElementById("chatbox");
+  chatbox.appendChild(button);
+  document.body.insertBefore(app.view, document.body.childNodes[0]);
 
   app.renderer.backgroundColor = 0x076324;
 
@@ -354,7 +360,7 @@ connection.on
     "ReceiveCardsList",
     function (cardsList) {
       console.log(cardsList); //displays JS object cardsList
-
+      addChatMessage("New cards recieved");
       if (cardsList) {
           console.log("Received cardsList. Waiting for Game.cs to update of cards display.");
           for (i = 0; i < 2; i++) {
@@ -389,6 +395,7 @@ function sendPlay(row, column)
 
 function joinRoom() {
   connection.invoke("JoinRoom");
+  addChatMessage("Joining session...");
 }
 
 connection.on
@@ -396,8 +403,12 @@ connection.on
     "JoinRoomResult",
     function (success) {
       console.log("Room join succes:", success);
-      if (!success) {
+      
+      if (success) {
         getCardsList();
+        addChatMessage("Successfully joined the room");
+      } else {
+        addChatMessage("Failed to join the room");
       }
     }
   );
@@ -411,10 +422,10 @@ connection.on
       console.log("Received Play Result with status", result);
 
       if (result) {
-        // TODO indicate a success somehow
+        addChatMessage("Played card successfully", 4);
       }
       else {
-        // TODO indicate a failure somehow
+        addChatMessage("Failed to play card", 4);
       }
       adjustSpritesLocation();
       doCardHighlighting();
@@ -441,9 +452,19 @@ connection.on
       let txt = new PIXI.Text(winMessage, { fontSize: 20, stroke: 1 });
       txt.anchor.set(.5, 0);
       app.stage.add(txt);
+      addChatMessage(winMessage);
     }
   );
 
+function addChatMessage(message, timeout = 6) {
+  var chatBox = document.getElementById("chatbox");
+  var newMessage = document.createElement("p");
+  newMessage.innerText = message;
+  chatBox.appendChild(newMessage);
+  setTimeout(function () {
+    newMessage.remove();
+  }, timeout * 1000);
+}
 
 
 /**** GET CARD IMAGE ****

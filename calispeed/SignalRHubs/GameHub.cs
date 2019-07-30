@@ -65,6 +65,11 @@ namespace CaliSpeed.SignalRHubs
             }
         }
 
+        public async Task ResetGame()
+        {
+            room = RoomFactory.createRoom();
+            await JoinRoom();
+        }
 
         private Game GetGame()
         {
