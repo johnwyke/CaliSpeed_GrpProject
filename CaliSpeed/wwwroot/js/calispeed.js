@@ -322,7 +322,7 @@ connection.start().then
 (
     function ()
     {
-        getCardsList();
+      joinRoom();
     }
 );
 
@@ -372,19 +372,6 @@ connection.on
     }
   );
 
-// Once Game.cs tells client to update cardsList...
-
-connection.on
-  (
-    "Update_AllCards",
-    function (cards) {
-      console.log(cards); //displays JS object cards
-
-      //update a ton of stuff
-      console.log("UPDATE NOW TO SHOW ALL NEW CARDS");
-    }
-  );
-
 
 /**** SEND PLAY, RECEIVE PLAY RESULT, and UPDATE CARD ****
  * 
@@ -399,6 +386,21 @@ function sendPlay(row, column)
 {
     connection.invoke("PlayCard", row, column);
 }
+
+function joinRoom() {
+  connection.invoke("JoinRoom");
+}
+
+connection.on
+  (
+    "JoinRoomResult",
+    function (success) {
+      console.log("Room join succes:", success);
+      if (!success) {
+        getCardsList();
+      }
+    }
+  );
 
 // Once GameHub responds...
 connection.on
@@ -423,17 +425,12 @@ connection.on
 connection.on
   (
     "Update_NewCard",
-      function (row, column, matchResult, newCard) {
-          console.log("Match Result: " + matchResult);
+      function (row, column, newCard) {
           console.log("New Card: ");
           console.log(newCard);
-        if (matchResult) {
-            var image = getCardImage(newCard).image;
-            var newTexture = PIXI.Loader.shared.resources[image].texture;
-            cardSprites[row * 4 + column].texture = newTexture;
-        }
-        else {
-        }
+          var image = getCardImage(newCard).image;
+          var newTexture = PIXI.Loader.shared.resources[image].texture;
+          cardSprites[row * 4 + column].texture = newTexture;
     }
   );
 

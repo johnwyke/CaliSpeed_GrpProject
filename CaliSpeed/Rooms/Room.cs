@@ -17,7 +17,7 @@ namespace CaliSpeed.Rooms
 
         private IHubContext<GameHub> _hubContext;
 
-        public Room(IHubContext<GameHub> hubContext, int connectionId)
+        public Room(IHubContext<GameHub> hubContext)
         {
             // Bind events to Game events
             // See CaliforniaSpeedLibrary::Game.cs to see further documentation
@@ -47,7 +47,7 @@ namespace CaliSpeed.Rooms
         /// <returns></returns>
         private async Task Game_NewBoardEvent(Game.Card[,] cards)
         {
-            await _hubContext.Clients.All.SendAsync("Update_AllCards", cards);
+            await _hubContext.Clients.All.SendAsync("ReceiveCardsList", cards);
         }
         /// <summary>
         /// Called when a new card is played by a player
@@ -61,7 +61,7 @@ namespace CaliSpeed.Rooms
         {
             Console.WriteLine("New card has been played by " + player);
             
-            await _hubContext.Clients.All.SendAsync("Update_NewCard", row, column, GameInstance.playgameBoard[row, column].matchPresent, card);
+            await _hubContext.Clients.All.SendAsync("Update_NewCard", row, column, card);
 
         }
     }

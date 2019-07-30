@@ -23,13 +23,12 @@ namespace CaliSpeed.SignalRHubs
             var game = GetGame();
             // verify our play works
 
-            Console.WriteLine(Context.ConnectionId.GetHashCode());
+            Console.WriteLine($"{Context.ConnectionId} played card at row:{row} column:{column}");
 
-            if (await game.PlayCards(Context.ConnectionId.GetHashCode(), row, column))
+            if (await game.PlayCards(Context.ConnectionId, row, column))
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceivePlayResult", true);
                 Console.WriteLine("Received play result success");
-                // DEBUG play card
             }
             else
             {
@@ -48,12 +47,30 @@ namespace CaliSpeed.SignalRHubs
             await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.getAsCards());
         }
 
+        /// <summary>
+        /// Allows the client to join a room
+        /// </summary>
+        /// <returns></returns>
+        public async Task JoinRoom()
+        {
+            var game = GetGame();
+            bool success = game.JoinGame(Context.ConnectionId);
+            
+            await Clients.Client(Context.ConnectionId).SendAsync("JoinRoomResult", success);
+
+            if (success)
+            {
+                // also send the client the card list
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveCardsList", game.getAsCards());
+            }
+        }
+
 
         private Game GetGame()
         {
             if (room == null)
             {
-                room = RoomFactory.createRoom(Context.ConnectionId.GetHashCode());
+                room = RoomFactory.createRoom();
             }
             return room.GameInstance;
         }
