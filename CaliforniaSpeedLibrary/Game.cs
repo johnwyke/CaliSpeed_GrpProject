@@ -177,7 +177,7 @@ namespace CaliforniaSpeedLibrary
                     else if (i == 1){
                         // Handles Players 2 cards
                         playgameBoard[i, j].cardList.Clear();
-                        playgameBoard[i, j].cardList.Add(player2.cardList[player1.cardList.Count - 1]);
+                        playgameBoard[i, j].cardList.Add(player2.cardList[player2.cardList.Count - 1]);
                         player2.cardList.RemoveAt(player2.cardList.Count - 1);
                     }
                    
