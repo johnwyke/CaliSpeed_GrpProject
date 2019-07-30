@@ -331,6 +331,7 @@ namespace CaliforniaSpeedLibrary
         /// </summary>
         private void setMatchingFlags()
         {
+            bool checkstale = true;
             // Loop Through the board setting flags
             foreach (Deck Cell in playgameBoard)
             {
@@ -351,6 +352,7 @@ namespace CaliforniaSpeedLibrary
                                     if (currCard.Face == compCard.Face)
                                     {
                                         Cell.matchPresent = true;
+                                        checkstale = false;
                                         playgameBoard[i, j].matchPresent = true;
                                         Console.WriteLine($"Match i: {i} j: {j}");
                                     }
@@ -364,6 +366,11 @@ namespace CaliforniaSpeedLibrary
                     }// End Outer
                 }// End If 
             }// End For Each
+
+            if (checkstale)
+            {
+                reDistributeCards();
+            }
         }
 
 
