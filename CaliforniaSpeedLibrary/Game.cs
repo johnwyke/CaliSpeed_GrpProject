@@ -153,7 +153,7 @@ namespace CaliforniaSpeedLibrary
                 }
             }
             setMatchingFlags();
-           
+            stalemate();
         }
         /// <summary>
         /// Handles the card distribution of each player for one row. 
@@ -189,7 +189,7 @@ namespace CaliforniaSpeedLibrary
                 await NewBoardEvent(getAsCards());
             }
             setMatchingFlags();
-
+            stalemate();
         }
         /// <summary>
         /// This Is called by Init Deck. 
@@ -322,6 +322,8 @@ namespace CaliforniaSpeedLibrary
             }
             else
             {
+                setMatchingFlags();
+                stalemate();
                 return false;
 	        }
 	    }

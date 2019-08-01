@@ -37,7 +37,7 @@ namespace CaliSpeed.Rooms
         /// <returns></returns>
         private async Task GameInstance_NewWinnerEvent(string winMessage)
         {
-            await _hubContext.Clients.All.SendAsync("NewWinner", winMessage);
+            await _hubContext.Clients.All.SendAsync("PlayerWon", winMessage);
         }
 
         /// <summary>
