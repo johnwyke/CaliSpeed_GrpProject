@@ -53,6 +53,21 @@
 
 var card_back = 'card_back_black.png';
 
+// Instantiate connection
+let connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
+
+function startConnection() {
+  // Once connected, run any desired startup code here
+  connection.start().then
+    (
+      function () {
+        joinRoom();
+        getCardsList();
+        addChatMessage("Connection started");
+      }
+    );
+}
+
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
@@ -181,7 +196,9 @@ window.onload = function () {
             }
         }
         app.stage.addChild(cardback);
-        adjustSpritesLocation();
+      adjustSpritesLocation();
+      addChatMessage("Game loaded");
+      startConnection();
     }
 };
 
@@ -320,20 +337,6 @@ var club = null;
  *  
  */
 
-// Instantiate connection
-var connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
-
-// Once connected, run any desired startup code here
-connection.start().then
-(
-    function ()
-    {
-      joinRoom();
-    }
-);
-
-
-
 
 /**** GET CARDS LIST, RECEIVE CARDS LIST, and UPDATE CARDS ****
  * 
@@ -449,10 +452,7 @@ connection.on
   (
     "PlayerWon",
     function (winMessage) {
-      let txt = new PIXI.Text(winMessage, { fontSize: 20, stroke: 1 });
-      txt.anchor.set(.5, 0);
-      app.stage.add(txt);
-      addChatMessage(winMessage);
+      addChatMessage(winMessage, 10);
     }
   );
 
